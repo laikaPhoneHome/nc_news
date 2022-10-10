@@ -60,15 +60,24 @@ describe('GET', () => {
                         )
                     })
                 })
-                test.only('Responds Error with 404 not found if given a valid id that doesnt exist', () => {
+                test.only('Responds Error 404 not found if given a valid id that doesnt exist', () => {
                     return request(app)
                     .get('/api/articles/100')
                     .expect(404)
+                    .then(({ body }) => {
+
+                        const { message } = body;
+                        expect(message).toBe('Not Found');
+                    })
+                })
+                test('Responds Error 400 for a request with invalid id', () => {
+                    return request(app)
+                    .get('/api/articles/articleTen')
+                    .expect(400)
                     .then(({body}) => {
 
                         const { message } = body;
-
-                        expect(message).toBe('Not Found');
+                        expect(message).toBe('Invalid ID');
                     })
                 })
             })

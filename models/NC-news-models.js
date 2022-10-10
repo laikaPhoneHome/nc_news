@@ -13,8 +13,8 @@ exports.fetchArticleById = (id) => {
     `, [id])
     .then(({rows: [article]}) => {
         if(!article){
-            return Promise.reject({status: 404, msg: 'Not Found'})
+            return Promise.reject({status: 404, msg: 'Not Found'});
         }
-        return article
+        return article;
     })
 }
