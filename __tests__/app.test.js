@@ -1,6 +1,6 @@
 const seed = require('../db/seeds/seed')
 const db = require('../db/connection.js')
-const testData = ('../db/data/test-data')
+const testData = require('../db/data/test-data')
 
 const request =require("supertest")
 const app =require('../app')
@@ -10,6 +10,10 @@ afterAll(()=> {
     return db.end()
 })
 
+beforeEach(() => {
+    return seed(testData);
+})
+
 describe('GET', () => {
     describe('/api', () => {
         describe('/topics', () => {
@@ -17,10 +21,9 @@ describe('GET', () => {
                 return request(app)
                 .get('/api/topics')
                 .expect(200)
-                .then((response => {
-                    const {
-                        body: {topics}
-                    } = response;
+                .then(({body}) => {
+
+                    const { topics } = body;
 
                     expect(topics).toHaveLength(3);
                     topics.forEach((topic => {
@@ -31,7 +34,7 @@ describe('GET', () => {
                             })
                         )
                     }))
-                }))
+                })
             })
         })
     })
