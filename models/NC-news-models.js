@@ -12,6 +12,9 @@ exports.fetchArticleById = (id) => {
     WHERE article_id = $1;
     `, [id])
     .then(({rows: [article]}) => {
+        if(!article){
+            return Promise.reject({status: 404, msg: 'Not Found'})
+        }
         return article
     })
 }
