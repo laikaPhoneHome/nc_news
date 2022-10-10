@@ -133,6 +133,16 @@ describe('PATCH', () => {
                         )
                     })
                 })
+                test('Responds Error 404 not found if given a valid id that doesnt exist', () => {
+                    return request(app)
+                    .patch('/api/articles/100')
+                    .send({ inc_votes : 1 })
+                    .expect(404)
+                    .then(({ body }) => {
+                        const { message } = body;
+                        expect(message).toBe('Not Found');
+                    })
+                })
             })
         })
     })

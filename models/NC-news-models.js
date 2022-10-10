@@ -1,4 +1,5 @@
 const db = require('../db/connection');
+const { articleData } = require('../db/data/test-data');
 
 exports.fetchTopics = () => {
     return db.query(`SELECT * FROM topics;`).then(({rows: topics}) => {
@@ -41,6 +42,9 @@ exports.updateArticle = (votes, id) => {
     RETURNING *;
     `, [votes, id])
     .then(({rows: [article]}) => {
+        if(!article){
+            return Promise.reject({status: 404, msg: 'Not Found'});
+        }
         return article;
     })
 }
