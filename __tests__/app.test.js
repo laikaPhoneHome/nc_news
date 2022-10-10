@@ -60,6 +60,17 @@ describe('GET', () => {
                         )
                     })
                 })
+                test('Responds Error with 404 not found if given a valid id that doesnt exist', () => {
+                    request(app)
+                    .get('/api/articles/100')
+                    .expect(404)
+                    .then(({body}) => {
+
+                        const { message } = body;
+
+                        expect(message).toBe('Not Found');
+                    })
+                })
             })
         })
     })
