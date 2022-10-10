@@ -60,7 +60,7 @@ describe('GET', () => {
                         )
                     })
                 })
-                test.only('Responds Error 404 not found if given a valid id that doesnt exist', () => {
+                test('Responds Error 404 not found if given a valid id that doesnt exist', () => {
                     return request(app)
                     .get('/api/articles/100')
                     .expect(404)
@@ -70,7 +70,7 @@ describe('GET', () => {
                         expect(message).toBe('Not Found');
                     })
                 })
-                test('Responds Error 400 for a request with invalid id', () => {
+                test.only('Responds Error 400 for a request with invalid id', () => {
                     return request(app)
                     .get('/api/articles/articleTen')
                     .expect(400)

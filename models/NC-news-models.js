@@ -7,6 +7,11 @@ exports.fetchTopics = () => {
 }
 
 exports.fetchArticleById = (id) => {
+    const numID = Number(id)
+
+    if(isNaN(numID)){
+        return Promise.reject({status: 400, msg: 'Invalid ID'});
+    }
     return db.query(`
     SELECT * FROM articles
     WHERE article_id = $1;
