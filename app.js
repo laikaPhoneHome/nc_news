@@ -1,13 +1,15 @@
 const express = require('express');
 const app = express();
 
-const { getTopics, getArticleById, getUsers } = require('./controllers/NC-news-controllers.js')
+const { getTopics, getArticleById, getUsers, patchArticleById } = require('./controllers/NC-news-controllers.js')
 
 app.use(express.json());
 
 app.get('/api/topics', getTopics);
 app.get('/api/articles/:article_id', getArticleById);
 app.get('/api/users', getUsers);
+
+app.patch('/api/articles/:article_id', patchArticleById);
 
 
 app.use((err, req, res, next) => {

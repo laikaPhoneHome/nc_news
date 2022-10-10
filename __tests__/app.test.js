@@ -106,3 +106,34 @@ describe('GET', () => {
         })
     })
 })
+describe('PATCH', () => {
+    describe('/api', () => {
+        describe('/articles', () => {
+            describe('/:article_id', () => {
+                
+                test('Responds with status 202 and an updated article object - Takes a body with an inc_votes property that increments the article\'s votes property by the given amount', () => {
+                    return request(app)
+                    .patch('/api/articles/5')
+                    .send({ inc_votes : 1 })
+                    .expect(202)
+                    .then(({body}) => {
+
+                        const { article } = body;
+
+                        expect(article).toEqual(
+                            expect.objectContaining({
+                                article_id: 5,
+                                title: 'UNCOVERED: catspiracy to bring down democracy',
+                                author: 'rogersop',
+                                created_at: "2020-08-03T13:14:00.000Z",
+                                body: 'Bastet walks amongst us, and the cats are taking arms!',
+                                votes: 1,
+                                topic: 'cats'
+                            })
+                        )
+                    })
+                })
+            })
+        })
+    })
+})

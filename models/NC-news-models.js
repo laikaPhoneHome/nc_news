@@ -6,7 +6,7 @@ exports.fetchTopics = () => {
     })
 }
 
-exports.fetchArticleById = (id) => {
+exports.fetchArticle = (id) => {
     const numID = Number(id)
 
     if(isNaN(numID)){
@@ -30,5 +30,17 @@ exports.fetchUsers = () => {
     `)
     .then(({rows: users}) => {
         return users;
+    })
+}
+
+exports.updateArticle = (votes, id) => {
+    return db.query(`
+    UPDATE articles
+    SET votes = $1
+    WHERE article_id = $2
+    RETURNING *;
+    `, [votes, id])
+    .then(({rows: [article]}) => {
+        return article;
     })
 }
