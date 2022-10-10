@@ -143,6 +143,16 @@ describe('PATCH', () => {
                         expect(message).toBe('Not Found');
                     })
                 })
+                test('Responds with Error 400 if given an invalid id', () => {
+                    return request(app)
+                    .patch('/api/articles/my-article')
+                    .send({ inc_votes: 1 })
+                    .expect(400)
+                    .then(({ body }) => {
+                        const { message } = body;
+                        expect(message).toBe('Invalid ID');
+                    })
+                })
             })
         })
     })

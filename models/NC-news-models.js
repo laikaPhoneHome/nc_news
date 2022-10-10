@@ -35,6 +35,12 @@ exports.fetchUsers = () => {
 }
 
 exports.updateArticle = (votes, id) => {
+    const numID = Number(id)
+
+    if(isNaN(numID)){
+        return Promise.reject({status: 400, msg: 'Invalid ID'});
+    }
+    
     return db.query(`
     UPDATE articles
     SET votes = $1
