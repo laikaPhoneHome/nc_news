@@ -70,7 +70,7 @@ describe('GET', () => {
                         expect(message).toBe('Not Found');
                     })
                 })
-                test.only('Responds Error 400 for a request with invalid id', () => {
+                test('Responds Error 400 for a request with invalid id', () => {
                     return request(app)
                     .get('/api/articles/articleTen')
                     .expect(400)
