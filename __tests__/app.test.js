@@ -153,6 +153,16 @@ describe('PATCH', () => {
                         expect(message).toBe('Invalid ID');
                     })
                 })
+                test('Responds with Error 400 if given an invalid votes count', () => {
+                    return request(app)
+                    .patch('/api/articles/5')
+                    .send({ inc_votes: 'one'})
+                    .expect(400)
+                    .then(({ body }) => {
+                        const { message } = body;
+                        expect(message).toBe('Invalid Vote Count')
+                    })
+                })
             })
         })
     })
