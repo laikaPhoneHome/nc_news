@@ -83,6 +83,17 @@ describe('GET', () => {
                     )
                 })
             })
+            test('Response articles can be sorted by any valid column and defaults to date and ordered ASC/DESC', () => {
+                return request(app)
+                .get('/api/articles?sort_by=votes&order=desc')
+                .expect(200)
+                .then(({ body }) => {
+
+                    const { articles } = body;
+
+                    expect(articles).toBeSortedBy('votes', { decending: true})
+                })
+            })
             test('Responds with status 400 if given an invalid topic', () => {
                 return request(app)
                 .get('/api/articles?topic=boats')
@@ -166,6 +177,7 @@ describe('GET', () => {
                     )
                 })
             })
+
 
         })
         describe('/users', () => {
