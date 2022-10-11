@@ -67,7 +67,7 @@ describe('GET', () => {
                     .then(({ body }) => {
 
                         const { message } = body;
-                        expect(message).toBe('Not Found');
+                        expect(message).toBe('Article Not Found');
                     })
                 })
                 test('Responds Error 400 for a request with invalid id', () => {
@@ -77,10 +77,32 @@ describe('GET', () => {
                     .then(({ body }) => {
 
                         const { message } = body;
-                        expect(message).toBe('Invalid ID');
+                        expect(message).toBe('Invalid Article Id');
                     })
                 })
             })
+            test('Responds with a comment count property', () => {
+                return request(app)
+                .get('/api/articles/5')
+                .expect(200)
+                .then(({ body }) => {
+                    const { article } = body;
+
+                    expect(article).toEqual(
+                        expect.objectContaining({
+                            article_id: 5,
+                                title: 'UNCOVERED: catspiracy to bring down democracy',
+                                author: 'rogersop',
+                                created_at: "2020-08-03T13:14:00.000Z",
+                                body: 'Bastet walks amongst us, and the cats are taking arms!',
+                                votes: 0,
+                                topic: 'cats',
+                                comment_count: '2'
+                        })
+                    )
+                })
+            })
+
         })
         describe('/users', () => {
             test('Responds with status 200 and an array of user objects', () => {
