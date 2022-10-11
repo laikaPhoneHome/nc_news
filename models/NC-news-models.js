@@ -11,15 +11,19 @@ exports.fetchArticle = (id) => {
     const numID = Number(id)
 
     if(isNaN(numID)){
-        return Promise.reject({status: 400, msg: 'Invalid ID'});
+        return Promise.reject({status: 400, msg: 'Invalid Article Id'});
     }
     return db.query(`
-    SELECT * FROM articles
-    WHERE article_id = $1;
+    SELECT articles.*, COUNT(comment_id) AS comment_count
+    FROM articles 
+    LEFT JOIN comments 
+        ON articles.article_id = comments.article_id 
+        WHERE articles.article_id = $1  GROUP BY articles.article_id;
+
     `, [id])
     .then(({rows: [article]}) => {
         if(!article){
-            return Promise.reject({status: 404, msg: 'Not Found'});
+            return Promise.reject({status: 404, msg: 'Article Not Found'});
         }
         return article;
     })
