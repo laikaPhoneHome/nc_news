@@ -11,8 +11,34 @@ exports.getTopics = (req, res, next) => {
 
 exports.getArticles = (req, res, next) => {
     const { topic } = req.query;
-    fetchArticles(topic).then((articles) => {
-        res.status(200).send({ articles });
+
+    const promises = [fetchArticles(topic)]
+    
+
+    if(topic){
+        promises.push(fetchTopics())
+    }
+
+    Promise.all(promises).then((promises) => {
+        if(promises[1]){
+            let validTopic = false;
+            promises[1].forEach(promise => {
+                if(promise.slug === topic){
+                    validTopic = true;
+                }
+            })
+            if(!validTopic){
+                return Promise.reject({ status: 400, msg: 'Invalid Topic' });
+            }
+            else
+            {
+                res.status(200).send({ articles: promises[0] });
+            }
+        }
+        else 
+        {
+            res.status(200).send({ articles: promises[0] });
+        }
     })
     .catch((err) => {
         next(err);
