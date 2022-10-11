@@ -7,7 +7,19 @@ exports.fetchTopics = () => {
     })
 }
 
-exports.fetchArticle = (id) => {
+exports.fetchArticles = () => {
+    return db.query(`
+    SELECT articles.*, COUNT(comment_id) AS comment_count
+    FROM articles 
+    LEFT JOIN comments 
+        ON articles.article_id = comments.article_id
+        GROUP BY articles.article_id;
+    `).then(({rows: articles}) => {
+        return articles
+    })
+}
+
+exports.selectArticle = (id) => {
     const numID = Number(id)
 
     if(isNaN(numID)){
@@ -19,7 +31,6 @@ exports.fetchArticle = (id) => {
     LEFT JOIN comments 
         ON articles.article_id = comments.article_id 
         WHERE articles.article_id = $1  GROUP BY articles.article_id;
-
     `, [id])
     .then(({rows: [article]}) => {
         if(!article){
