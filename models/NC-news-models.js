@@ -7,16 +7,32 @@ exports.fetchTopics = () => {
     })
 }
 
-exports.fetchArticles = () => {
-    return db.query(`
+exports.fetchArticles = (topic) => {
+    
+    let defaultQuery = `
     SELECT articles.*, COUNT(comment_id) AS comment_count
-    FROM articles 
+    FROM articles
     LEFT JOIN comments 
-        ON articles.article_id = comments.article_id
-        GROUP BY articles.article_id;
-    `).then(({rows: articles}) => {
-        return articles
-    })
+    ON articles.article_id = comments.article_id `
+
+    if(topic){
+        defaultQuery += ` WHERE articles.topic = $1 `
+    }
+
+
+    defaultQuery += ` 
+    GROUP BY articles.article_id
+    ORDER BY articles.created_at DESC;`
+    
+    if(topic){
+        return db.query(defaultQuery,[topic]).then(({rows: articles}) => {
+            return articles;
+        })
+    }else {
+        return db.query(defaultQuery).then(({rows: articles}) => {
+            return articles;
+        })
+    }
 }
 
 exports.selectArticle = (id) => {

@@ -69,7 +69,7 @@ describe('GET', () => {
                     const { articles } = body;
 
                     expect(articles).toHaveLength(1);
-                    expect(articles).toEqual(
+                    expect(articles[0]).toEqual(
                         expect.objectContaining({
                             article_id: 5,
                             title: 'UNCOVERED: catspiracy to bring down democracy',
