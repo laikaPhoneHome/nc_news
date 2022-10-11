@@ -29,7 +29,7 @@ exports.fetchArticles = (topic, sort_by, order) => {
         GROUP BY articles.article_id
         ORDER BY articles.created_at = $2;`
     }
-    const order
+    // const order
     if(order.toUpperCase() === ''){
 
     }

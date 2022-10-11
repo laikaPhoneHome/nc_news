@@ -17,7 +17,7 @@ beforeEach(() => {
 describe('GET', () => {
     describe('/api', () => {
         describe('/topics', () => {
-            test('Responds with status 200 and an array of topic objects', () => {
+            test.only('Responds with status 200 and an array of topic objects', () => {
                 return request(app)
                 .get('/api/topics')
                 .expect(200)
@@ -83,7 +83,7 @@ describe('GET', () => {
                     )
                 })
             })
-            test.only('Response articles can be sorted by any valid column and defaults to date and ordered ASC/DESC', () => {
+            test('Response articles can be sorted by any valid column and defaults to date and ordered ASC/DESC', () => {
                 return request(app)
                 .get('/api/articles?sort_by=votes&order=desc')
                 .expect(200)
