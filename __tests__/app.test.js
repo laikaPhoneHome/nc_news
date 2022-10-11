@@ -83,7 +83,7 @@ describe('GET', () => {
                     )
                 })
             })
-            test('Responds with status 400 if given an invalid topic', () => {
+            test.only('Responds with status 400 if given an invalid topic', () => {
                 return request(app)
                 .get('/api/articles?topic=boats')
                 .expect(400)
@@ -91,6 +91,14 @@ describe('GET', () => {
 
                     const { message } = body;
                     expect(message).toBe('Invalid Topic');
+                })
+            })
+            test('Responds with status 200 if given a valid topic with no associated articles', () => {
+                return request(app)
+                .get('/api/articles?topic=paper')
+                .expect(200)
+                .then(({ body }) => {
+                    expect(body).toHaveLength(0);
                 })
             })
             describe('/:article_id', () => {
