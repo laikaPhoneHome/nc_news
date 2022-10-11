@@ -83,7 +83,7 @@ describe('GET', () => {
                     )
                 })
             })
-            test('Response articles can be sorted by any valid column and defaults to date and ordered ASC/DESC', () => {
+            test.only('Response articles can be sorted by any valid column and defaults to date and ordered ASC/DESC', () => {
                 return request(app)
                 .get('/api/articles?sort_by=votes&order=desc')
                 .expect(200)

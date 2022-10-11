@@ -7,7 +7,7 @@ exports.fetchTopics = () => {
     })
 }
 
-exports.fetchArticles = (topic) => {
+exports.fetchArticles = (topic, sort_by, order) => {
     
     let defaultQuery = `
     SELECT articles.*, COUNT(comment_id) AS comment_count
@@ -20,9 +20,20 @@ exports.fetchArticles = (topic) => {
     }
 
 
-    defaultQuery += ` 
+    let sortByQuery = ` 
     GROUP BY articles.article_id
     ORDER BY articles.created_at DESC;`
+
+    if(sort){
+        sortByQuery = ` 
+        GROUP BY articles.article_id
+        ORDER BY articles.created_at = $2;`
+    }
+    const order
+    if(order.toUpperCase() === ''){
+
+    }
+    defaultQuery += orderQuery;
     
     if(topic){
         return db.query(defaultQuery,[topic]).then(({rows: articles}) => {
