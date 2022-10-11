@@ -6,7 +6,7 @@ const { getTopics, getArticleById, getUsers, patchArticleById, getArticles } = r
 app.use(express.json());
 
 app.get('/api/topics', getTopics);
-app.get('/api/articles', getArticles);
+app.get('/api/articles?topic=topic_id', getArticles);
 app.get('/api/articles/:article_id', getArticleById);
 app.get('/api/users', getUsers);
 

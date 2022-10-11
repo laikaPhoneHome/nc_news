@@ -60,7 +60,28 @@ describe('GET', () => {
                         )
                     })
                 })
-            
+            })
+            test('Accepts a topic as a query and returns articles of only that topic', () => {
+                return request(app)
+                .get('/api/articles?topic=cats')
+                .expect(200)
+                .then(({body}) => {
+                    const { articles } = body;
+
+                    expect(articles).toHaveLength(1);
+                    expect(articles).toEqual(
+                        expect.objectContaining({
+                            article_id: 5,
+                            title: 'UNCOVERED: catspiracy to bring down democracy',
+                            author: 'rogersop',
+                            created_at: "2020-08-03T13:14:00.000Z",
+                            body: 'Bastet walks amongst us, and the cats are taking arms!',
+                            votes: 0,
+                            topic: 'cats',
+                            comment_count: '2'
+                        })
+                    )
+                })
             })
             describe('/:article_id', () => {
 
