@@ -17,7 +17,7 @@ beforeEach(() => {
 describe('GET', () => {
     describe('/api', () => {
         describe('/topics', () => {
-            test.only('Responds with status 200 and an array of topic objects', () => {
+            test('Responds with status 200 and an array of topic objects', () => {
                 return request(app)
                 .get('/api/topics')
                 .expect(200)
@@ -85,13 +85,13 @@ describe('GET', () => {
             })
             test('Response articles can be sorted by any valid column and defaults to date and ordered ASC/DESC', () => {
                 return request(app)
-                .get('/api/articles?sort_by=votes&order=desc')
+                .get('/api/articles?sort_by=votes&order=asc')
                 .expect(200)
                 .then(({ body }) => {
 
                     const { articles } = body;
 
-                    expect(articles).toBeSortedBy('votes', { decending: true})
+                    expect(articles).toBeSortedBy('votes', { decending: false})
                 })
             })
             test('Responds with status 400 if given an invalid topic', () => {
@@ -111,6 +111,16 @@ describe('GET', () => {
                 .then(({ body }) => {
                     const { articles } = body;
                     expect(articles).toHaveLength(0);
+                })
+            })
+            test('Responds with status 400 if given an invalid sort category', () => {
+                return request(app)
+                .get('/api/articles?sort_by=size')
+                .expect(400)
+                .then(({ body }) => {
+
+                    const { message } = body;
+                    expect(message).toBe('Invalid Sort Category')
                 })
             })
             describe('/:article_id', () => {

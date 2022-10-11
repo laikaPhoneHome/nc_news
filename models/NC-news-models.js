@@ -7,39 +7,43 @@ exports.fetchTopics = () => {
     })
 }
 
-exports.fetchArticles = (topic, sort_by, order) => {
-    
+exports.fetchArticles = (topic, sort_by = 'created_at', order = 'DESC') => {
+    const validCategory = ['title','topic', 'author','body', 'created_at','votes'];
+    const validOrder = ['ASC', 'DESC'];
+
+
+    if(!validCategory.includes(sort_by)){
+        return Promise.reject({status: 400, msg: "Invalid Sort Category"})
+    }
+    if(!validOrder.includes(order.toUpperCase())){
+        return Promise.reject({status: 400, msg: "Invalid Order"})
+    }
+
     let defaultQuery = `
     SELECT articles.*, COUNT(comment_id) AS comment_count
     FROM articles
     LEFT JOIN comments 
     ON articles.article_id = comments.article_id `
 
+    const queries = []
+
     if(topic){
-        defaultQuery += ` WHERE articles.topic = $1 `
+        queries.push(` WHERE articles.topic = $1 `);
     }
+    queries.push(` GROUP BY articles.article_id  `);
 
+    queries.push(` ORDER BY ${sort_by} `);
 
-    let sortByQuery = ` 
-    GROUP BY articles.article_id
-    ORDER BY articles.created_at DESC;`
-
-    if(sort){
-        sortByQuery = ` 
-        GROUP BY articles.article_id
-        ORDER BY articles.created_at = $2;`
-    }
-    // const order
-    if(order.toUpperCase() === ''){
-
-    }
-    defaultQuery += orderQuery;
+    defaultQuery += queries.join('');
     
+    defaultQuery += order.toUpperCase();
+    defaultQuery += ';'
+
     if(topic){
         return db.query(defaultQuery,[topic]).then(({rows: articles}) => {
             return articles;
         })
-    }else {
+    } else {
         return db.query(defaultQuery).then(({rows: articles}) => {
             return articles;
         })

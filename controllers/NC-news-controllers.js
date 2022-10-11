@@ -13,7 +13,6 @@ exports.getArticles = (req, res, next) => {
     const { topic } = req.query;
     const { sort_by } = req.query;
     const { order } = req.query;
-    console.log(order, sort_by)
 
     const promises = [fetchArticles(topic, sort_by, order)]
     
