@@ -1,4 +1,4 @@
-const { fetchTopics, fetchArticle, fetchUsers, updateArticle } = require('../models/NC-news-models')
+const { fetchTopics, selectArticle, fetchUsers, updateArticle, fetchArticles } = require('../models/NC-news-models')
 
 exports.getTopics = (req, res, next) => {
     fetchTopics().then((topics) => {
@@ -9,9 +9,45 @@ exports.getTopics = (req, res, next) => {
     })
 }
 
+exports.getArticles = (req, res, next) => {
+    const { topic } = req.query;
+
+    const promises = [fetchArticles(topic)]
+    
+
+    if(topic){
+        promises.push(fetchTopics())
+    }
+
+    Promise.all(promises).then((promises) => {
+        if(promises[1]){
+            let validTopic = false;
+            promises[1].forEach(promise => {
+                if(promise.slug === topic){
+                    validTopic = true;
+                }
+            })
+            if(!validTopic){
+                return Promise.reject({ status: 400, msg: 'Invalid Topic' });
+            }
+            else
+            {
+                res.status(200).send({ articles: promises[0] });
+            }
+        }
+        else 
+        {
+            res.status(200).send({ articles: promises[0] });
+        }
+    })
+    .catch((err) => {
+        next(err);
+    })
+}
+
 exports.getArticleById = (req, res, next) => {
     const { article_id } = req.params;
-    fetchArticle(article_id).then((article) => {
+    selectArticle(article_id).then((article) => {
         res.status(200).send({article});
     })
     .catch((err) => {

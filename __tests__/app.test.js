@@ -38,6 +38,70 @@ describe('GET', () => {
             })
         })
         describe('/articles', () => {
+            test('Responds with status 200 and a body containing an array of article objects sorted by default: date in decending order', () => {
+                return request(app)
+                .get('/api/articles')
+                .expect(200)
+                .then(({ body }) => {
+                    const { articles } = body;
+
+                    expect(articles).toHaveLength(12);
+                    articles.forEach(article => {
+                        expect(article).toEqual(
+                            expect.objectContaining({
+                                author: expect.any(String),
+                                title: expect.any(String),
+                                article_id: expect.any(Number),
+                                topic: expect.any(String),
+                                created_at: expect.any(String),
+                                votes: expect.any(Number),
+                                comment_count: expect.any(String),
+                            })
+                        )
+                    })
+                })
+            })
+            test('Accepts a topic as a query and returns articles of only that topic', () => {
+                return request(app)
+                .get('/api/articles?topic=cats')
+                .expect(200)
+                .then(({body}) => {
+                    const { articles } = body;
+
+                    expect(articles).toHaveLength(1);
+                    expect(articles[0]).toEqual(
+                        expect.objectContaining({
+                            article_id: 5,
+                            title: 'UNCOVERED: catspiracy to bring down democracy',
+                            author: 'rogersop',
+                            created_at: "2020-08-03T13:14:00.000Z",
+                            body: 'Bastet walks amongst us, and the cats are taking arms!',
+                            votes: 0,
+                            topic: 'cats',
+                            comment_count: '2'
+                        })
+                    )
+                })
+            })
+            test('Responds with status 400 if given an invalid topic', () => {
+                return request(app)
+                .get('/api/articles?topic=boats')
+                .expect(400)
+                .then(({ body }) => {
+
+                    const { message } = body;
+                    expect(message).toBe('Invalid Topic');
+                })
+            })
+            test('Responds with status 200 if given a valid topic with no associated articles', () => {
+                return request(app)
+                .get('/api/articles?topic=paper')
+                .expect(200)
+                .then(({ body }) => {
+                    const { articles } = body;
+                    expect(articles).toHaveLength(0);
+                })
+            })
             describe('/:article_id', () => {
 
                 test('Responds with 200 status and an article object', () => {
