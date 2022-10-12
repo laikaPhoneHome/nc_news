@@ -16,6 +16,11 @@ module.exports = [
     avatar_url: 'https://avatars2.githubusercontent.com/u/24394918?s=400&v=4'
   },
   {
+    username: 'halfcat,halfcat',
+    name: 'harry_test',
+    avatar_url: 'https://poohadventures.fandom.com/wiki/CatDog?file=CatDog_without_Dog_so_just_Cat.jpg'
+  },
+  {
     username: 'lurker',
     name: 'do_nothing',
     avatar_url:

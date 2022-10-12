@@ -174,8 +174,6 @@ describe('GET', () => {
                             const { comments } = body;
 
                             expect(comments).toHaveLength(2);
-                            // expect(comments).toBeSortedBy('created_at', { decending: true}); - dates' format doesnt work
-                            comments.forEach(comment => {
                                 expect(comment).toEqual(
                                     expect.objectContaining({
                                         comment_id: expect.any(Number),
@@ -243,7 +241,7 @@ describe('GET', () => {
 
                     const { users } = body;
 
-                    expect(users).toHaveLength(4);
+                    expect(users).toHaveLength(5);
                     users.forEach((user) => {
                         expect(user).toEqual(
                             expect.objectContaining({
@@ -313,6 +311,80 @@ describe('PATCH', () => {
                     .then(({ body }) => {
                         const { message } = body;
                         expect(message).toBe('Invalid Vote Count')
+                    })
+                })
+            })
+        })
+    })
+})
+describe('POST', () => {
+    describe('/api', () => {
+        describe('/articles', () => {
+            describe('/:article_id', () => {
+                describe('/comments', () => {
+                    test('Responds with status 201 accepts a request body and responds with the \'posted\' comment', () => {
+                        return request(app)
+                        .post('/api/articles/5/comments')
+                        .send({
+                            username: 'halfcat,halfcat',
+                            body: 'me-ow'
+                        })
+                        .expect(201)
+                        .then(({ body }) => {
+                            const { comment } = body;
+
+                            expect(comment).toEqual(
+                                expect.objectContaining({
+                                    comment_id: expect.any(Number),
+                                    votes: expect.any(Number),
+                                    created_at: expect.any(String),
+                                    author: expect.any(String),
+                                    body: expect.any(String)
+                                })
+                            )
+                        })
+                    })
+                    test('Responds with status 404 if given a valid article id that doesn\'t exist', () => {
+                        return request(app)
+                        .post('/api/articles/100/comments')
+                        .send({
+                            username: 'halfcat,halfcat',
+                            body: 'me-ow'
+                        })
+                        .expect(404)
+                        .then(({ body }) => {
+                            
+                            const { message } = body;
+                            expect(message).toBe('Article Not Found');
+                        })
+                    })
+                    test('Responds with 400 when given an invalid article id', () => {
+                        return request(app)
+                        .post('/api/articles/artikel/comments')
+                        .send({
+                            username: 'halfcat,halfcat',
+                            body: 'me-ow'
+                        })
+                        .expect(400)
+                        .then(({ body }) => {
+                            
+                            const { message } = body;
+                            expect(message).toBe('Invalid Article Id');
+                        })
+                    })
+                    test('Responds with 400 if given a invalid comment data in the body', () => {
+                        return request(app)
+                        .post('/api/articles/5/comments')
+                        .send({
+                            username: 'user',
+                            body: 'hello world'
+                        })
+                        .expect(400)
+                        .then(({ body }) => {
+
+                            const { message } = body;
+                            expect(message).toBe('Invalid User');
+                        })
                     })
                 })
             })

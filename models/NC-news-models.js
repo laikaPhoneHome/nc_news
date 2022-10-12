@@ -120,3 +120,14 @@ exports.updateArticle = (votes, id) => {
         return article;
     })
 }
+
+exports.insertComment = (username, body, article_id) => {
+    return db.query(`
+    INSERT INTO comments (author, body, article_id)
+    VALUES ($1, $2, $3)
+    RETURNING body, votes, author, comment_id, created_at;
+    `,[username, body, article_id])
+    .then(({rows: [comment]}) => {
+        return comment;
+    })
+}
