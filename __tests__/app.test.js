@@ -319,3 +319,35 @@ describe('PATCH', () => {
         })
     })
 })
+describe('POST', () => {
+    describe('/api', () => {
+        describe('/articles', () => {
+            describe('/:article_id', () => {
+                describe('/comments', () => {
+                    test('Responds with status 201 accepts a request body and responds with the \'posted\' comment', () => {
+                        return request(app)
+                        .post('/api/articles/5/comments')
+                        .send({
+                            username: 'halfcat,halfcat',
+                            body: 'me-ow'
+                        })
+                        .expect(201)
+                        .then(({ body }) => {
+                            const { comment } = body;
+
+                            expect(comment).toEqual(
+                                expect.objectContaining({
+                                    comment_id: expect.any(Number),
+                                    votes: expect.any(Number),
+                                    created_at: expect.any(String),
+                                    author: expect.any(String),
+                                    body: expect.any(String)
+                                })
+                            )
+                        })
+                    })
+                })
+            })
+        })
+    })
+})
