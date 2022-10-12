@@ -15,13 +15,52 @@
     "exampleResponse": {
       "articles": [
         {
+          "article_id": 6,
           "title": "Seafood substitutions are increasing",
           "topic": "cooking",
           "author": "weegembump",
           "body": "Text from the article..",
+          "votes": 0,
+          "comment_count": 2,
           "created_at": 1527695953341
         }
       ]
+    },
+    "/:article_id": {
+      "description": "Serves the article of the given id",
+      "queries": [],
+      "exampleResponse": {
+        "article": {
+          "article_id": 5,
+          "title": "I had the craziest dream...",
+          "topic": "cats",
+          "author": "Me",
+          "body": "Text from the article..",
+          "votes": 1,
+          "comment_count": 0,
+          "created_at": 1261945957202
+        }
+      }
     }
+    
+  },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "queries": [],
+    "exampleResponse": {
+      "users": [{ "username": "footballBoss", "name": "Drake" , "avatar_url": "https://www.dreamstime.com/happy-cat-closeup-portrait-funny-smile-cardboard-young-blue-background-image102078702"}]
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "uploads a comment to the given article",
+    "queries": [],
+    "exampleRequestBody": {
+      "username": "mango77", "body": "What a great article! I'll read it tomorrow!"
+    }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "removes the comment by the given id",
+    "queries": []
   }
+
 }

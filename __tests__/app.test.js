@@ -442,7 +442,15 @@ describe('DELETE', () => {
                         expect(message).toEqual('Comment Not Found');
                     })
                 })
-                
+                test('Responds with 400 if given an invalid comment id', () => {
+                    return request(app)
+                    .delete('/api/comments/thelastone')
+                    .expect(400)
+                    .then(({ body }) => {
+                        const { message } = body;
+                        expect(message).toEqual('Invalid Comment Id');
+                    })
+                })
             })
         })
     })

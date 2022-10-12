@@ -15,7 +15,6 @@ if(process.env.NODE_ENV === 'test'){
     commentData = require('../db/data/test-data/comments')
 }
 
-
 exports.getTopics = (req, res, next) => {
     fetchTopics().then((topics) => {
         res.status(200).send({topics});
