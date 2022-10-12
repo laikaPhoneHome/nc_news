@@ -7,28 +7,44 @@ exports.fetchTopics = () => {
     })
 }
 
-exports.fetchArticles = (topic) => {
-    
+exports.fetchArticles = (topic, sort_by = 'created_at', order = 'DESC') => {
+    const validCategory = ['title', 'topic', 'author', 'body', 'created_at', 'votes'];
+    const validOrder = ['ASC', 'DESC'];
+    const queries = [];
+
+    if(!validCategory.includes(sort_by)){
+        return Promise.reject({status: 400, msg: "Invalid Sort Category"})
+    }
+    if(!validOrder.includes(order.toUpperCase())){
+        return Promise.reject({status: 400, msg: "Invalid Order"})
+    }
+
     let defaultQuery = `
     SELECT articles.*, COUNT(comment_id) AS comment_count
     FROM articles
     LEFT JOIN comments 
     ON articles.article_id = comments.article_id `
 
-    if(topic){
-        defaultQuery += ` WHERE articles.topic = $1 `
-    }
+    topic ? 
+      queries.push(` 
+    WHERE articles.topic = $1 
+    GROUP BY articles.article_id  
+    ORDER BY ${sort_by}
+    `)
+    : queries.push(`
+    GROUP BY articles.article_id  
+    ORDER BY ${sort_by}
+    `)
 
+    defaultQuery += queries.join('');
+    defaultQuery += order.toUpperCase();
+    defaultQuery += ';';
 
-    defaultQuery += ` 
-    GROUP BY articles.article_id
-    ORDER BY articles.created_at DESC;`
-    
     if(topic){
         return db.query(defaultQuery,[topic]).then(({rows: articles}) => {
             return articles;
         })
-    }else {
+    } else {
         return db.query(defaultQuery).then(({rows: articles}) => {
             return articles;
         })
@@ -36,7 +52,7 @@ exports.fetchArticles = (topic) => {
 }
 
 exports.selectArticle = (id) => {
-    const numID = Number(id)
+    const numID = Number(id);
 
     if(isNaN(numID)){
         return Promise.reject({status: 400, msg: 'Invalid Article Id'});
@@ -53,6 +69,20 @@ exports.selectArticle = (id) => {
             return Promise.reject({status: 404, msg: 'Article Not Found'});
         }
         return article;
+    })
+    
+}
+
+exports.fetchComments = (article) => {
+    return db.query(`
+    SELECT comment_id, comments.votes, comments.created_at, comments.author, comments.body FROM comments 
+        LEFT JOIN articles
+        ON articles.article_id = comments.article_id
+    WHERE comments.article_id = $1
+    ORDER BY comments.created_at DESC;
+    `,[article])
+    .then(({rows: comments}) => {
+        return comments;
     })
 }
 

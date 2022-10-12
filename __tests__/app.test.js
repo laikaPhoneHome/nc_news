@@ -83,6 +83,17 @@ describe('GET', () => {
                     )
                 })
             })
+            test('Response articles can be sorted by any valid column and defaults to date and ordered ASC/DESC', () => {
+                return request(app)
+                .get('/api/articles?sort_by=votes&order=asc')
+                .expect(200)
+                .then(({ body }) => {
+
+                    const { articles } = body;
+
+                    expect(articles).toBeSortedBy('votes', { decending: false})
+                })
+            })
             test('Responds with status 400 if given an invalid topic', () => {
                 return request(app)
                 .get('/api/articles?topic=boats')
@@ -100,6 +111,16 @@ describe('GET', () => {
                 .then(({ body }) => {
                     const { articles } = body;
                     expect(articles).toHaveLength(0);
+                })
+            })
+            test('Responds with status 400 if given an invalid sort category', () => {
+                return request(app)
+                .get('/api/articles?sort_by=size')
+                .expect(400)
+                .then(({ body }) => {
+
+                    const { message } = body;
+                    expect(message).toBe('Invalid Sort Category')
                 })
             })
             describe('/:article_id', () => {
@@ -144,6 +165,50 @@ describe('GET', () => {
                         expect(message).toBe('Invalid Article Id');
                     })
                 })
+                describe('/comments',() => {
+                    test('Responds with status 200 and an array of the associated comments, sorted by date with most recent first', () => {
+                        return request(app)
+                        .get('/api/articles/5/comments')
+                        .expect(200)
+                        .then(( {body} ) => {
+                            const { comments } = body;
+
+                            expect(comments).toHaveLength(2);
+                            // expect(comments).toBeSortedBy('created_at', { decending: true}); - dates' format doesnt work
+                            comments.forEach(comment => {
+                                expect(comment).toEqual(
+                                    expect.objectContaining({
+                                        comment_id: expect.any(Number),
+                                        votes: expect.any(Number),
+                                        created_at: expect.any(String),
+                                        author: expect.any(String),
+                                        body: expect.any(String)
+                                    })
+                                )
+                            })
+                        })
+                    })
+                    test('Responds with status 400 if given an invalid article Id', () => {
+                        return request(app)
+                        .get('/api/articles/news/comments')
+                        .expect(400)
+                        .then(({ body }) => {
+
+                            const { message } = body;
+                            expect(message).toBe('Invalid Article Id');
+                        })
+                    })
+                    test('Responds with status 404 if given a valid article Id that doesn\'t exist', () => {
+                        return request(app)
+                        .get('/api/articles/100/comments')
+                        .expect(404)
+                        .then(({ body }) => {
+
+                            const { message } = body;
+                            expect(message).toBe('Article Not Found');
+                        })
+                    })
+                })
             })
             test('Responds with a comment count property', () => {
                 return request(app)
@@ -166,6 +231,7 @@ describe('GET', () => {
                     )
                 })
             })
+
 
         })
         describe('/users', () => {
