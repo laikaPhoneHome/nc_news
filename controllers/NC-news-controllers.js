@@ -102,7 +102,12 @@ exports.postCommentByArticleId = (req, res, next) => {
     const { username, body } = req.body;
     const { article_id } =req.params;
 
-    insertComment(username, body, article_id).then((comment) => {
+    const promises = [selectArticle(article_id), insertComment(username, body, article_id)]
+
+    return Promise.all(promises).then(([article, comment]) => {
         res.status(201).send({comment});
+    })
+    .catch((err) => {
+        next(err);
     })
 }
