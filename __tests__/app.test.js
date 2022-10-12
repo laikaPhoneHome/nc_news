@@ -166,7 +166,7 @@ describe('GET', () => {
                     })
                 })
                 describe('/comments',() => {
-                    test('Responds with status 200 and an array of the associated comments, sorted by date with most recent first', () => {
+                    test.only('Responds with status 200 and an array of the associated comments, sorted by date with most recent first', () => {
                         return request(app)
                         .get('/api/articles/5/comments')
                         .expect(200)
@@ -186,8 +186,16 @@ describe('GET', () => {
                                     })
                                 )
                             })
+                        })
+                    })
+                    test('Responds with status 400 if given an invalid article Id', () => {
+                        return request(app)
+                        .get('/api/articles/news/comments')
+                        .expect(400)
+                        .then(({ body }) => {
 
-                            
+                            const { message } = body;
+                            expect(message).toBe('Invalid Article Id');
                         })
                     })
                 })
