@@ -243,7 +243,7 @@ describe('GET', () => {
 
                     const { users } = body;
 
-                    expect(users).toHaveLength(4);
+                    expect(users).toHaveLength(5);
                     users.forEach((user) => {
                         expect(user).toEqual(
                             expect.objectContaining({

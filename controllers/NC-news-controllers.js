@@ -1,4 +1,12 @@
-const { fetchTopics, selectArticle, fetchUsers, updateArticle, fetchArticles, fetchComments } = require('../models/NC-news-models')
+const { 
+fetchTopics, 
+selectArticle, 
+fetchUsers, 
+updateArticle, 
+fetchArticles, 
+fetchComments,
+insertComment 
+} = require('../models/NC-news-models')
 
 exports.getTopics = (req, res, next) => {
     fetchTopics().then((topics) => {
@@ -87,5 +95,14 @@ exports.patchArticleById = (req, res, next) => {
     })
     .catch((err) => {
         next(err);
+    })
+}
+
+exports.postCommentByArticleId = (req, res, next) => {
+    const { username, body } = req.body;
+    const { article_id } =req.params;
+
+    insertComment(username, body, article_id).then((comment) => {
+        res.status(201).send({comment});
     })
 }
