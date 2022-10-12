@@ -166,7 +166,7 @@ describe('GET', () => {
                     })
                 })
                 describe('/comments',() => {
-                    test.only('Responds with status 200 and an array of the associated comments, sorted by date with most recent first', () => {
+                    test('Responds with status 200 and an array of the associated comments, sorted by date with most recent first', () => {
                         return request(app)
                         .get('/api/articles/5/comments')
                         .expect(200)
@@ -188,7 +188,7 @@ describe('GET', () => {
                             })
                         })
                     })
-                    test('Responds with status 400 if given an invalid article Id', () => {
+                    test.only('Responds with status 400 if given an invalid article Id', () => {
                         return request(app)
                         .get('/api/articles/news/comments')
                         .expect(400)
@@ -196,6 +196,16 @@ describe('GET', () => {
 
                             const { message } = body;
                             expect(message).toBe('Invalid Article Id');
+                        })
+                    })
+                    test('Responds with status 404 if given a valid article Id that doesn\'t exist', () => {
+                        return request(app)
+                        .get('/api/articles/100/comments')
+                        .expect(404)
+                        .then(({ body }) => {
+
+                            const { message } = body;
+                            expect(message).toBe('Article Not Found');
                         })
                     })
                 })

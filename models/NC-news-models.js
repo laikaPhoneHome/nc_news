@@ -52,7 +52,7 @@ exports.fetchArticles = (topic, sort_by = 'created_at', order = 'DESC') => {
 }
 
 exports.selectArticle = (id) => {
-    const numID = Number(id)
+    const numID = Number(id);
 
     if(isNaN(numID)){
         return Promise.reject({status: 400, msg: 'Invalid Article Id'});
@@ -73,6 +73,11 @@ exports.selectArticle = (id) => {
 }
 
 exports.fetchComments = (article) => {
+    const numID = Number(article);
+
+    if(isNaN(numID)){
+        return Promise.reject({status: 400, msg: 'Invalid Article Id'});
+    }
     return db.query(`
     SELECT * FROM comments 
         LEFT JOIN articles
