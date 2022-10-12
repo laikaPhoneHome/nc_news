@@ -73,6 +73,22 @@ exports.selectArticle = (id) => {
     
 }
 
+exports.selectComment = (id) => {
+    if(isNaN(Number(id))){
+        return Promise.reject({status: 400, msg: "Invalid Comment Id"})
+    }
+    return db.query(`
+    SELECT * FROM comments
+    WHERE comment_id = $1;
+    `, [id])
+    .then(({rows: [comment]}) => {
+        return comment;
+    })
+    .catch((err) => {
+        next(err);
+    })
+}
+
 exports.fetchComments = (article) => {
     return db.query(`
     SELECT comment_id, comments.votes, comments.created_at, comments.author, comments.body FROM comments 
@@ -129,5 +145,22 @@ exports.insertComment = (username, body, article_id) => {
     `,[username, body, article_id])
     .then(({rows: [comment]}) => {
         return comment;
+    })
+}
+
+exports.removeComment = (id) => {
+    if(isNaN(Number(id))){
+        return Promise.reject({status: 400, msg: "Invalid Comment Id"})
+    }
+    return db.query(`
+    DELETE FROM comments
+    WHERE comment_id = $1
+    RETURNING *;
+    `,[id]).then(({rows: [comment]}) => {
+        if(!comment){
+            return Promise.reject({status: 404, msg: 'Comment Not Found'})
+        } else {
+            return;
+        }
     })
 }

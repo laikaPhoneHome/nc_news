@@ -37,6 +37,30 @@ describe('GET', () => {
                     })
             })
         })
+        describe('/comments', () => {
+            describe('/:comment_id', () => {
+                test('Responds with status 200 and a body containing the comment with the given id', () => {
+                    return request(app)
+                        .get('/api/comments/3')
+                        .expect(200)
+                        .then(({ body }) => {
+                            const { comment } = body;
+
+                            expect(comment).toEqual(
+                                expect.objectContaining({
+                                    body: expect.any(String),
+                                    votes: expect.any(Number),
+                                    author: expect.any(String),
+                                    article_id: expect.any(Number),
+                                    created_at: expect.any(String),
+                                    comment_id: expect.any(Number)
+                                })
+                            )
+                        })
+                })
+                
+            })
+        })
         describe('/articles', () => {
             test('Responds with status 200 and a body containing an array of article objects sorted by default: date in decending order', () => {
                 return request(app)
@@ -326,6 +350,7 @@ describe('POST', () => {
         describe('/articles', () => {
             describe('/:article_id', () => {
                 describe('/comments', () => {
+
                     test('Responds with status 201 accepts a request body and responds with the \'posted\' comment', () => {
                         return request(app)
                             .post('/api/articles/5/comments')
@@ -376,7 +401,7 @@ describe('POST', () => {
                                 expect(message).toBe('Invalid Article Id');
                             })
                     })
-                    test.only('Responds with 400 if given a invalid comment data in the body', () => {
+                    test('Responds with 400 if given a invalid comment data in the body', () => {
                         return request(app)
                             .post('/api/articles/5/comments')
                             .send({
@@ -396,17 +421,28 @@ describe('POST', () => {
     })
 })
 describe('DELETE', () => {
-    descibe('/api', () => {
+    describe('/api', () => {
         describe('/comments', () => {
             describe('/:comment_id', () => {
+
                 test('Responds with status 204 and an empty response body', () => {
                     return request(app)
-                    .delete('/api/comments/5')
+                    .delete('/api/comments/1')
                     .expect(204)
                     .then(({ body }) => {
                         expect(body).toEqual({});
                     })
                 })
+                test('Responds with 404 if given a valid comment id that doesn\'t exist', () => {
+                    return request(app)
+                    .delete('/api/comments/1000')
+                    .expect(404)
+                    .then(({ body }) => {
+                        const { message } = body;
+                        expect(message).toEqual('Comment Not Found');
+                    })
+                })
+                
             })
         })
     })
