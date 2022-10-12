@@ -174,8 +174,6 @@ describe('GET', () => {
                             const { comments } = body;
 
                             expect(comments).toHaveLength(2);
-                            // expect(comments).toBeSortedBy('created_at', { decending: true}); - dates' format doesnt work
-                            comments.forEach(comment => {
                                 expect(comment).toEqual(
                                     expect.objectContaining({
                                         comment_id: expect.any(Number),
@@ -372,6 +370,20 @@ describe('POST', () => {
                             
                             const { message } = body;
                             expect(message).toBe('Invalid Article Id');
+                        })
+                    })
+                    test('Responds with 400 if given a invalid comment data in the body', () => {
+                        return request(app)
+                        .post('/api/articles/5/comments')
+                        .send({
+                            username: 'user',
+                            body: 'hello world'
+                        })
+                        .expect(400)
+                        .then(({ body }) => {
+
+                            const { message } = body;
+                            expect(message).toBe('Invalid User');
                         })
                     })
                 })
