@@ -346,8 +346,8 @@ describe('POST', () => {
                             )
                         })
                     })
-                    test('Responds with status 404 if given a valid article id that doesn\'t exist', () => {
-                        request(app)
+                    test.only('Responds with status 404 if given a valid article id that doesn\'t exist', () => {
+                        return request(app)
                         .post('/api/articles/100/comments')
                         .send({
                             username: 'halfcat,halfcat',
@@ -360,8 +360,8 @@ describe('POST', () => {
                             expect(message).toBe('Article Not Found');
                         })
                     })
-                    test.only('Responds with 400 when given an invalid article id', () => {
-                        request(app)
+                    test('Responds with 400 when given an invalid article id', () => {
+                        return request(app)
                         .post('/api/articles/artikel/comments')
                         .send({
                             username: 'halfcat,halfcat',
