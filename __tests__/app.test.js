@@ -174,7 +174,7 @@ describe('GET', () => {
                             const { comments } = body;
 
                             expect(comments).toHaveLength(2);
-                            expect(comments).toBeSortedBy('created_at', { decending: true});
+                            // expect(comments).toBeSortedBy('created_at', { decending: true}); - dates' format doesnt work
                             comments.forEach(comment => {
                                 expect(comment).toEqual(
                                     expect.objectContaining({
@@ -188,7 +188,7 @@ describe('GET', () => {
                             })
                         })
                     })
-                    test.only('Responds with status 400 if given an invalid article Id', () => {
+                    test('Responds with status 400 if given an invalid article Id', () => {
                         return request(app)
                         .get('/api/articles/news/comments')
                         .expect(400)

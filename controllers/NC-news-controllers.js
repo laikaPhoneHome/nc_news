@@ -58,7 +58,11 @@ exports.getArticleById = (req, res, next) => {
 
 exports.getCommentsByArticleId = (req, res, next) => {
     const { article_id } = req.params;
-    fetchComments(article_id).then((comments) => {
+
+    const promises = [fetchComments(article_id), 
+        selectArticle(article_id)];
+
+    Promise.all(promises).then(([comments, article]) => {
         res.status(200).send({comments});
     })
     .catch((err) => {
