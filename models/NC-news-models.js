@@ -8,9 +8,9 @@ exports.fetchTopics = () => {
 }
 
 exports.fetchArticles = (topic, sort_by = 'created_at', order = 'DESC') => {
-    const validCategory = ['title','topic', 'author','body', 'created_at','votes'];
+    const validCategory = ['title', 'topic', 'author', 'body', 'created_at', 'votes'];
     const validOrder = ['ASC', 'DESC'];
-
+    const queries = [];
 
     if(!validCategory.includes(sort_by)){
         return Promise.reject({status: 400, msg: "Invalid Sort Category"})
@@ -25,19 +25,20 @@ exports.fetchArticles = (topic, sort_by = 'created_at', order = 'DESC') => {
     LEFT JOIN comments 
     ON articles.article_id = comments.article_id `
 
-    const queries = []
-
-    if(topic){
-        queries.push(` WHERE articles.topic = $1 `);
-    }
-    queries.push(` GROUP BY articles.article_id  `);
-
-    queries.push(` ORDER BY ${sort_by} `);
+    topic ? 
+      queries.push(` 
+    WHERE articles.topic = $1 
+    GROUP BY articles.article_id  
+    ORDER BY ${sort_by}
+    `)
+    : queries.push(`
+    GROUP BY articles.article_id  
+    ORDER BY ${sort_by}
+    `)
 
     defaultQuery += queries.join('');
-    
     defaultQuery += order.toUpperCase();
-    defaultQuery += ';'
+    defaultQuery += ';';
 
     if(topic){
         return db.query(defaultQuery,[topic]).then(({rows: articles}) => {
