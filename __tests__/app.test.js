@@ -16,6 +16,15 @@ beforeEach(() => {
 
 describe('GET', () => {
     describe('/api', () => {
+
+        test.only('Responds with status 200 and an object representing the available endpoints', () => {
+            return request(app)
+            .get('/api')
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual();
+            })
+        })
         describe('/topics', () => {
             test('Responds with status 200 and an array of topic objects', () => {
                 return request(app)
