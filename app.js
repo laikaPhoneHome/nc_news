@@ -11,9 +11,12 @@ const {
     postCommentByArticleId,
     deleteCommentById,
     getCommentById,
+    getEndpoints,
 } = require('./controllers/NC-news-controllers.js')
 
 app.use(express.json());
+
+app.get('/api', getEndpoints);
 
 app.get('/api/topics', getTopics);
 app.get('/api/articles', getArticles);

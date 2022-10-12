@@ -14,6 +14,11 @@ let commentData = require('../db/data/development-data/comments')
 if(process.env.NODE_ENV === 'test'){
     commentData = require('../db/data/test-data/comments')
 }
+const endpoints = require('../endpoints.json');
+
+exports.getEndpoints = (req, res, next) => {
+    res.status(200).send({endpoints});
+}
 
 exports.getTopics = (req, res, next) => {
     fetchTopics().then((topics) => {

@@ -6,6 +6,8 @@ const request = require("supertest")
 const app = require('../app')
 const { response } = require('express')
 
+const endpoints = require('../endpoints.json');
+
 afterAll(() => {
     return db.end()
 })
@@ -22,7 +24,7 @@ describe('GET', () => {
             .get('/api')
             .expect(200)
             .then(({ body }) => {
-                expect(body).toEqual();
+                expect(body).toEqual({endpoints});
             })
         })
         describe('/topics', () => {
