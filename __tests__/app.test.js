@@ -346,7 +346,7 @@ describe('POST', () => {
                             )
                         })
                     })
-                    test.only('Responds with status 404 if given a valid article id that doesn\'t exist', () => {
+                    test('Responds with status 404 if given a valid article id that doesn\'t exist', () => {
                         return request(app)
                         .post('/api/articles/100/comments')
                         .send({
