@@ -173,6 +173,8 @@ describe('GET', () => {
                         .then(( {body} ) => {
                             const { comments } = body;
 
+                            expect(comments).toHaveLength(2);
+                            expect(comments).toBeSortedBy('created_at', { decending: true});
                             comments.forEach(comment => {
                                 expect(comment).toEqual(
                                     expect.objectContaining({

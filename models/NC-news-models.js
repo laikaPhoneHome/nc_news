@@ -72,6 +72,19 @@ exports.selectArticle = (id) => {
     })
 }
 
+exports.fetchComments = (article) => {
+    return db.query(`
+    SELECT * FROM comments 
+        LEFT JOIN articles
+        ON articles.article_id = comments.article_id
+    WHERE comments.article_id = $1
+    ORDER BY comments.created_at DESC;
+    `,[article])
+    .then(({rows: comments}) => {
+        return comments;
+    })
+}
+
 exports.fetchUsers = () => {
     return db.query(`
     SELECT * FROM users;
