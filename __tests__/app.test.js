@@ -324,7 +324,7 @@ describe('POST', () => {
         describe('/articles', () => {
             describe('/:article_id', () => {
                 describe('/comments', () => {
-                    test('Responds with status 201 accepts a request body and responds with the \'posted\' comment', () => {
+                    test.only('Responds with status 201 accepts a request body and responds with the \'posted\' comment', () => {
                         return request(app)
                         .post('/api/articles/5/comments')
                         .send({
@@ -344,6 +344,20 @@ describe('POST', () => {
                                     body: expect.any(String)
                                 })
                             )
+                        })
+                    })
+                    test('Responds with 400 when given an invalid article id', () => {
+                        request(app)
+                        .post('/api/articles/5/comments')
+                        .send({
+                            username: 'halfcat,halfcat',
+                            body: 'me-ow'
+                        })
+                        .expect(400)
+                        .then(({ body }) => {
+                            
+                            const { message } = body;
+                            expect(message).toBe('Invalid Article Id');
                         })
                     })
                 })
