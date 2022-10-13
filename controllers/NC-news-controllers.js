@@ -5,8 +5,16 @@ fetchUsers,
 updateArticle, 
 fetchArticles, 
 fetchComments,
-insertComment 
+insertComment,
+removeComment,
+selectComment
 } = require('../models/NC-news-models')
+const { createRef } = require('../db/seeds/utils')
+let commentData = require('../db/data/development-data/comments')
+if(process.env.NODE_ENV === 'test'){
+    commentData = require('../db/data/test-data/comments')
+}
+
 
 exports.getTopics = (req, res, next) => {
     fetchTopics().then((topics) => {
@@ -64,6 +72,16 @@ exports.getArticleById = (req, res, next) => {
     })
 }
 
+exports.getCommentById = (req, res, next) => {
+    const { comment_id } = req.params;
+
+    selectComment(comment_id).then((comment) => {
+        res.status(200).send({comment});
+    })
+    .catch((err) => {
+        next(err);
+    })
+}
 exports.getCommentsByArticleId = (req, res, next) => {
     const { article_id } = req.params;
 
@@ -106,6 +124,17 @@ exports.postCommentByArticleId = (req, res, next) => {
 
     return Promise.all(promises).then(([article, comment]) => {
         res.status(201).send({comment});
+    })
+    .catch((err) => {
+        next(err);
+    })
+}
+
+exports.deleteCommentById = (req, res, next) => {
+    const { comment_id } = req.params;
+
+    removeComment(comment_id).then(() => {
+        res.status(204).send({});
     })
     .catch((err) => {
         next(err);
