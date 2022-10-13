@@ -325,6 +325,31 @@ describe('GET', () => {
 })
 describe('PATCH', () => {
     describe('/api', () => {
+        describe('/comments', () => {
+            describe('/:comment_id', () => {
+
+                test('Responds with status 202 and accepts an object body, incrementing the given comment\'s votes by the inc_votes property', () => {
+                    return request(app)
+                    .patch('/api/comments/5')
+                    .send({ inc_votes : 1 })
+                    .expect(202)
+                    .then(({ body }) => {
+                        const { comment } = body;
+
+                        expect(comment).toEqual(
+                            expect.objectContaining({
+                                author: "icellusedkars",
+                                comment_id: 5,
+                                body: "I hate streaming noses",
+                                article_id: 1,
+                                votes: 1,
+                                created_at: expect.any(String)
+                            })
+                        )
+                    })
+                })
+            })
+        })
         describe('/articles', () => {
             describe('/:article_id', () => {
 

@@ -137,7 +137,7 @@ exports.updateArticle = (votes, id) => {
 
     return db.query(`
     UPDATE articles
-    SET votes = $1
+    SET votes = votes + $1
     WHERE article_id = $2
     RETURNING *;
     `, [votes, id])
@@ -156,6 +156,21 @@ exports.insertComment = (username, body, article_id) => {
     RETURNING body, votes, author, comment_id, created_at;
     `,[username, body, article_id])
     .then(({rows: [comment]}) => {
+        return comment;
+    })
+}
+
+exports.updateComment = (id, votes) => {
+    return db.query(`
+    UPDATE comments
+    SET votes = votes + $1
+    WHERE comment_id = $2
+    RETURNING *;
+    `, [votes, id])
+    .then(({rows: [comment]}) => {
+        if(!comment){
+            return Promise.reject({status: 404, msg: 'Comment Not Found'});
+        }
         return comment;
     })
 }
