@@ -6,6 +6,8 @@ const request = require("supertest")
 const app = require('../app')
 const { response } = require('express')
 
+const endpoints = require('../endpoints.json');
+
 afterAll(() => {
     return db.end()
 })
@@ -16,6 +18,15 @@ beforeEach(() => {
 
 describe('GET', () => {
     describe('/api', () => {
+
+        test('Responds with status 200 and an object representing the available endpoints', () => {
+            return request(app)
+            .get('/api')
+            .expect(200)
+            .then(({ body }) => {
+                expect(body).toEqual({endpoints});
+            })
+        })
         describe('/topics', () => {
             test('Responds with status 200 and an array of topic objects', () => {
                 return request(app)
@@ -442,7 +453,15 @@ describe('DELETE', () => {
                         expect(message).toEqual('Comment Not Found');
                     })
                 })
-                
+                test('Responds with 400 if given an invalid comment id', () => {
+                    return request(app)
+                    .delete('/api/comments/thelastone')
+                    .expect(400)
+                    .then(({ body }) => {
+                        const { message } = body;
+                        expect(message).toEqual('Invalid Comment Id');
+                    })
+                })
             })
         })
     })
