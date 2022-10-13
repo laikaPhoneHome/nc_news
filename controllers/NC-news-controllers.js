@@ -10,6 +10,7 @@ removeComment,
 selectComment
 } = require('../models/NC-news-models')
 const { createRef } = require('../db/seeds/utils')
+
 let commentData = require('../db/data/development-data/comments')
 if(process.env.NODE_ENV === 'test'){
     commentData = require('../db/data/test-data/comments')

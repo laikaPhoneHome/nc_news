@@ -12,17 +12,22 @@ const {
     deleteCommentById,
     getCommentById,
     getEndpoints,
-} = require('./controllers/NC-news-controllers.js')
+} = require('./controllers/NC-news-controllers.js');
+const {
+    apiRouter, 
+    topicRouter 
+} = require('./routes');
 
 app.use(express.json());
 
-app.get('/api', getEndpoints);
+app.use('/api', apiRouter);
+// app.get('/api', getEndpoints);
 
-app.get('/api/topics', getTopics);
+// app.get('/api/topics', getTopics);
 app.get('/api/articles', getArticles);
 app.get('/api/articles/:article_id', getArticleById);
 app.get('/api/articles/:article_id/comments', getCommentsByArticleId);
-app.get('/api/comments/:comment_id', getCommentById);
+// app.get('/api/comments/:comment_id', getCommentById);
 app.get('/api/users', getUsers);
 
 app.patch('/api/articles/:article_id', patchArticleById);

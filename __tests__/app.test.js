@@ -19,7 +19,7 @@ beforeEach(() => {
 describe('GET', () => {
     describe('/api', () => {
 
-        test.only('Responds with status 200 and an object representing the available endpoints', () => {
+        test('Responds with status 200 and an object representing the available endpoints', () => {
             return request(app)
             .get('/api')
             .expect(200)
@@ -28,7 +28,7 @@ describe('GET', () => {
             })
         })
         describe('/topics', () => {
-            test('Responds with status 200 and an array of topic objects', () => {
+            test.only('Responds with status 200 and an array of topic objects', () => {
                 return request(app)
                     .get('/api/topics')
                     .expect(200)
@@ -48,7 +48,7 @@ describe('GET', () => {
                     })
             })
         })
-        describe('/comments', () => {
+        describe.only('/comments', () => {
             describe('/:comment_id', () => {
                 test('Responds with status 200 and a body containing the comment with the given id', () => {
                     return request(app)
@@ -362,7 +362,7 @@ describe('POST', () => {
             describe('/:article_id', () => {
                 describe('/comments', () => {
 
-                    test('Responds with status 201 accepts a request body and responds with the \'posted\' comment', () => {
+                    test.only('Responds with status 201 accepts a request body and responds with the \'posted\' comment', () => {
                         return request(app)
                             .post('/api/articles/5/comments')
                             .send({
@@ -384,7 +384,7 @@ describe('POST', () => {
                                 )
                             })
                     })
-                    test('Responds with status 404 if given a valid article id that doesn\'t exist', () => {
+                    test.only('Responds with status 404 if given a valid article id that doesn\'t exist', () => {
                         return request(app)
                             .post('/api/articles/100/comments')
                             .send({
