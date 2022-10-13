@@ -413,6 +413,33 @@ describe('POST', () => {
     describe('/api', () => {
         describe('/articles', () => {
 
+            test('Responds with status 200 accepts a request body of an article object and responds with the posted article', () => {
+                return request(app)
+                .post('/api/articles')
+                .send({
+                    author: 'halfcat,halfcat',
+                    title: 'testing testing 123',
+                    body: 'This is my test',
+                    topic: 'tests'
+                })
+                .expect(201)
+                .then(({ body }) => {
+                    const { article } = body;
+
+                    expect(article).toEqual(
+                        expect.objectContaining({
+                            author: 'halfcat,halfcat',
+                            title: 'testing testing 123',
+                            body: 'This is my test',
+                            topic: 'tests',
+                            article_id: expect.any(Number),
+                            created_at: expect.any(String),
+                            votes: 0,
+                            comment_count: 0
+                        })
+                    )
+                })
+            })
             describe('/:article_id', () => {
                 describe('/comments', () => {
 
