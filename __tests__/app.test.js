@@ -19,7 +19,7 @@ beforeEach(() => {
 describe('GET', () => {
     describe('/api', () => {
 
-        test('Responds with status 200 and an object representing the available endpoints', () => {
+        test.only('Responds with status 200 and an object representing the available endpoints', () => {
             return request(app)
             .get('/api')
             .expect(200)
@@ -28,7 +28,7 @@ describe('GET', () => {
             })
         })
         describe('/topics', () => {
-            test.only('Responds with status 200 and an array of topic objects', () => {
+            test('Responds with status 200 and an array of topic objects', () => {
                 return request(app)
                     .get('/api/topics')
                     .expect(200)
@@ -48,7 +48,7 @@ describe('GET', () => {
                     })
             })
         })
-        describe.only('/comments', () => {
+        describe('/comments', () => {
             describe('/:comment_id', () => {
                 test('Responds with status 200 and a body containing the comment with the given id', () => {
                     return request(app)
