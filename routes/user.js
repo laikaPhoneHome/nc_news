@@ -9,27 +9,17 @@ const {
     removeComment,
     selectComment
     } = require('../models/NC-news-models');
-const app = require('../app');
+const userRouter = require('express').Router();
 
-const topicRouter = require('express').Router();
-
-topicRouter
+userRouter  
     .route('/')
     .get((req, res, next) => {
-        fetchTopics().then((topics) => {
-            res.status(200).send({topics});
+        fetchUsers().then((users) => {
+            res.status(200).send({users})
         })
         .catch((err) => {
             next(err);
         })
     })
-    .post((req, res) => {
-    })
-    .patch((req, res) => {
-    })
-    .delete((req, res) => {
-    })
 
-
-module.exports = topicRouter;
-
+module.exports = userRouter;

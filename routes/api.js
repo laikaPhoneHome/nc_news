@@ -1,16 +1,23 @@
 const apiRouter = require('express').Router();
 const endpoints = require('../endpoints.json');
 
-const commentRouter = require('./comment');
-const topicRouter = require('./index')
+const {
+    commentRouter, 
+    topicRouter, 
+    articleRouter,
+    userRouter
+} = require('./index')
 
-// apiRouter.use('/topics', topicRouter);
-// apiRouter.use('/comments', commentRouter);
+
+apiRouter.use('/topics', topicRouter);
+apiRouter.use('/comments', commentRouter);
+apiRouter.use('/articles', articleRouter);
+apiRouter.use('/users', userRouter)
+// apiRouter.use('/articles\/:article_id\/comments', commentRouter);
 
 apiRouter
     .route('/')
     .get((req, res) => {
-        console.log('api router')
         res.status(200).send({endpoints});
     })
     .post((req, res) => {
