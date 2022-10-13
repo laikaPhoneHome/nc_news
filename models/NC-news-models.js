@@ -111,6 +111,15 @@ exports.fetchUsers = () => {
     })
 }
 
+exports.selectUser = (username) => {
+    return db.query(`
+    SELECT * FROM users
+    WHERE username = $1;
+    `, [username]).then(({rows: [user]}) => {
+        return user;
+    })
+}
+
 exports.updateArticle = (votes, id) => {
     const numID = Number(id);
     const numVotes = Number(votes);

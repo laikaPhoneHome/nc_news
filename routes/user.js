@@ -7,7 +7,8 @@ const {
     fetchComments,
     insertComment,
     removeComment,
-    selectComment
+    selectComment,
+    selectUser
     } = require('../models/NC-news-models');
 const userRouter = require('express').Router();
 
@@ -19,6 +20,15 @@ userRouter
         })
         .catch((err) => {
             next(err);
+        })
+    })
+
+userRouter
+    .route('/:username')
+    .get((req, res, next) => {
+        const { username } = req.params;
+        selectUser(username).then((user) => {
+            res.status(200).send({user});
         })
     })
 
