@@ -111,6 +111,18 @@ exports.fetchUsers = () => {
     })
 }
 
+exports.selectUser = (username) => {
+    return db.query(`
+    SELECT * FROM users
+    WHERE username = $1;
+    `, [username]).then(({rows: [user]}) => {
+        if(!user){
+            return Promise.reject({status: 404, msg: "Username Not Found"})
+        }
+        return user;
+    })
+}
+
 exports.updateArticle = (votes, id) => {
     const numID = Number(id);
     const numVotes = Number(votes);

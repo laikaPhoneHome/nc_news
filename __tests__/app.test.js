@@ -292,6 +292,34 @@ describe('GET', () => {
                         })
                     })
             })
+            describe('/:username', () => {
+                test('Responds with status 200 and a user object with the given username', () => {
+                    return request(app)
+                    .get('/api/users/halfcat,halfcat')
+                    .expect(200)
+                    .then(({ body }) => {
+                        const { user } = body;
+
+                        expect(user).toEqual(
+                            expect.objectContaining({
+                                username: 'halfcat,halfcat',
+                                name: 'harry_test',
+                                avatar_url: 'https://poohadventures.fandom.com/wiki/CatDog?file=CatDog_without_Dog_so_just_Cat.jpg'
+                            })
+                        )
+                    })
+                })
+                test('Responds 404 when username not found', () => {
+                    return request(app)
+                    .get('/api/users/halfcat,halftest')
+                    .expect(404)
+                    .then(({ body }) => {
+                        const { message } = body;
+
+                        expect(message).toBe('Username Not Found')
+                    })
+                })
+            })
         })
     })
 })

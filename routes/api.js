@@ -13,7 +13,7 @@ apiRouter.use('/topics', topicRouter);
 apiRouter.use('/comments', commentRouter);
 apiRouter.use('/articles', articleRouter);
 apiRouter.use('/users', userRouter)
-// apiRouter.use('/articles\/:article_id\/comments', commentRouter);
+
 
 apiRouter
     .route('/')
