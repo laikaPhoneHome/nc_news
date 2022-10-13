@@ -73,6 +73,30 @@ exports.selectArticle = (id) => {
     
 }
 
+exports.insertArticle = (article) => {
+    const { author, title, body, topic} = article;
+
+    return db.query(`
+    INSERT INTO articles (author, title, body, topic)
+    VALUES ($1, $2, $3, $4)
+    RETURNING article_id;
+    `,[author, title, body, topic])
+    .then(({rows: [{article_id}]}) => {
+        console.log(article_id)
+        return db.query(`
+    SELECT articles.*, COUNT(comment_id) AS comment_count
+    FROM articles 
+    LEFT JOIN comments 
+        ON articles.article_id = comments.article_id 
+        WHERE articles.article_id = $1  GROUP BY articles.article_id;
+    `, [article_id])
+    .then(({rows: [article]}) => {
+        console.log(article)
+        return article;
+    })
+})
+}
+
 exports.selectComment = (id) => {
     if(isNaN(Number(id))){
         return Promise.reject({status: 400, msg: "Invalid Comment Id"})

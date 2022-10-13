@@ -420,9 +420,9 @@ describe('POST', () => {
                     author: 'halfcat,halfcat',
                     title: 'testing testing 123',
                     body: 'This is my test',
-                    topic: 'tests'
+                    topic: 'cats'
                 })
-                .expect(201)
+                .expect(202)
                 .then(({ body }) => {
                     const { article } = body;
 
@@ -431,11 +431,11 @@ describe('POST', () => {
                             author: 'halfcat,halfcat',
                             title: 'testing testing 123',
                             body: 'This is my test',
-                            topic: 'tests',
-                            article_id: expect.any(Number),
+                            topic: 'cats',
+                            article_id: 13,
                             created_at: expect.any(String),
                             votes: 0,
-                            comment_count: 0
+                            comment_count: '0'
                         })
                     )
                 })

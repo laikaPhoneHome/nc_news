@@ -7,7 +7,8 @@ const {
     fetchComments,
     insertComment,
     removeComment,
-    selectComment
+    selectComment,
+    insertArticle
     } = require('../models/NC-news-models');
 const app = require('../app');
 const articleRouter = require('express').Router();
@@ -55,6 +56,14 @@ articleRouter
     })
     })
     .post((req, res) => {
+        insertArticle(req.body).then((article) => {
+            console.log('post article')
+            console.log(article)
+            res.status(202).send({article});
+        })
+        .catch((err) => {
+            next(err);
+        })
     })
     .patch((req, res) => {
     })
