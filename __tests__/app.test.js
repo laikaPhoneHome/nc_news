@@ -305,8 +305,18 @@ describe('GET', () => {
                                 username: 'halfcat,halfcat',
                                 name: 'harry_test',
                                 avatar_url: 'https://poohadventures.fandom.com/wiki/CatDog?file=CatDog_without_Dog_so_just_Cat.jpg'
-                              })
+                            })
                         )
+                    })
+                })
+                test('Responds 404 when username not found', () => {
+                    return request(app)
+                    .get('/api/users/halfcat,halftest')
+                    .expect(404)
+                    .then(({ body }) => {
+                        const { message } = body;
+
+                        expect(message).toBe('Username Not Found')
                     })
                 })
             })
