@@ -655,5 +655,18 @@ describe('DELETE', () => {
                 })
             })
         })
+        describe('/articles', () => {
+            describe('/:article_id', () => {
+
+                test('Responds with status 200 and a response of an empty object', () => {
+                    return request(app)
+                        .delete('/api/articles/5')
+                        .expect(204)
+                        .then(({ body }) => {
+                            expect(body).toEqual({});
+                        })
+                })
+            })
+        })
     })
 })
