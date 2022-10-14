@@ -589,6 +589,24 @@ describe('POST', () => {
                             })
                         })
                 })
+                test('Responds with status 400 if given an invalid topic', () => {
+                    return request(app)
+                        .post('/api/topics')
+                        .send({
+                            "slug": "tests",
+                            "description": "description here",
+                            "snail": "slimy"
+                        })
+                        .expect(400)
+                        .then(({ body }) => {
+                            const { topic } = body;
+
+                            expect(topic).toEqual({
+                                "slug": "tests",
+                                "description": "description here"
+                            })
+                        })
+                })
             })
         })
     })

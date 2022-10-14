@@ -122,6 +122,9 @@ exports.insertArticle = (article) => {
         if(article[validKeys[i]] === undefined){
             return Promise.reject({status: 400, msg: `Invalid Article ${validKeys[i].charAt(0).toUpperCase() + validKeys[i].slice(1)}`})
         }
+        if(Object.keys(article) > validKeys){
+            return Promise.reject({status: 400, msg: 'Invalid Article Key'})
+        }
     }
     
     
