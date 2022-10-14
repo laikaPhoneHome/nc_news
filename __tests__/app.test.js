@@ -460,7 +460,7 @@ describe('POST', () => {
     describe('/api', () => {
         describe('/articles', () => {
 
-            test('Responds with status 200 accepts a request body of an article object and responds with the posted article', () => {
+            test.only('Responds with status 200 accepts a request body of an article object and responds with the posted article', () => {
                 return request(app)
                 .post('/api/articles')
                 .send({
@@ -487,7 +487,7 @@ describe('POST', () => {
                     )
                 })
             })
-            test('Responds with status 400 if given an invalid article', () => {
+            test.only('Responds with status 400 if given an invalid article', () => {
                 return request(app)
                 .post('/api/articles/')
                 .send({
@@ -498,7 +498,7 @@ describe('POST', () => {
                 .expect(400)
                 .then(({ body }) => {
                     const { message } = body;
-                    expect(message).toBe('Invalid Article Author');
+                    expect(message).toBe('Invalid Keys: my_name, name_of_my_article, n');
                 })
             })
 
@@ -589,7 +589,7 @@ describe('POST', () => {
                             })
                         })
                 })
-                test('Responds with status 400 if given an invalid topic', () => {
+                test.only('Responds with status 400 if given an invalid topic', () => {
                     return request(app)
                         .post('/api/topics')
                         .send({
@@ -599,12 +599,9 @@ describe('POST', () => {
                         })
                         .expect(400)
                         .then(({ body }) => {
-                            const { topic } = body;
+                            const { message } = body;
 
-                            expect(topic).toEqual({
-                                "slug": "tests",
-                                "description": "description here"
-                            })
+                            expect(message).toBe('Invalid Key: snail')
                         })
                 })
             })

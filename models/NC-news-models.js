@@ -10,7 +10,18 @@ exports.fetchTopics = () => {
 
 exports.insertTopic = (topic) => {
     const { slug, description } = topic;
+    const validKeys = ['slug', 'description'];
 
+    const invalidKey = Object.keys(topic).filter(key => validKeys.indexOf(key) === -1);
+    const undefinedKey = Object.keys(topic).filter(key => topic[validKeys] === undefined)
+    const plural = (arr) => arr.length > 1 ? 'Keys' : 'Key';
+
+    if(invalidKey[0]){
+        return Promise.reject({status: 400, msg: `Invalid ${plural(invalidKey)}: ${[invalidKey.join(', ')]}`})
+    } 
+    if(undefinedKey[0]){
+        return Promise.reject({status: 400, msg: `${plural(invalidKeys)}: ${[undefinedKey.join(', ')]} Cannot be Undefined`})
+    }
     return db.query(`
     INSERT INTO topics (slug, description)
     VALUES ($1, $2)
@@ -118,16 +129,19 @@ exports.selectArticle = (id) => {
 exports.insertArticle = (article) => {
     const { author, title, body, topic } = article;
     const validKeys = ['author', 'title', 'body', 'topic'];
-    for(let i=0; i<4; i++){
-        if(article[validKeys[i]] === undefined){
-            return Promise.reject({status: 400, msg: `Invalid Article ${validKeys[i].charAt(0).toUpperCase() + validKeys[i].slice(1)}`})
-        }
-        if(Object.keys(article) > validKeys){
-            return Promise.reject({status: 400, msg: 'Invalid Article Key'})
-        }
+
+    const invalidKey = Object.keys(article).filter(key => validKeys.indexOf(key) === -1);
+    const undefinedKey = Object.keys(article).filter(key => article[key] === undefined)
+    const plural = (arr) => arr.length > 1 ? 'Keys' : 'Key';
+
+    if(invalidKey[0]){
+        return Promise.reject({status: 400, msg: `Invalid ${plural(invalidKey)}: ${[invalidKey.join(', ')]}`})
+    } 
+
+    if(undefinedKey[0]){
+        return Promise.reject({status: 400, msg: `${plural(undefinedKey)}: ${[undefinedKey.join(', ')]} Cannot be Undefined`})
     }
-    
-    
+
     return db.query(`
     INSERT INTO articles (author, title, body, topic)
     VALUES ($1, $2, $3, $4)
