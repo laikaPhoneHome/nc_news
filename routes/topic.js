@@ -7,7 +7,8 @@ const {
     fetchComments,
     insertComment,
     removeComment,
-    selectComment
+    selectComment,
+    insertTopic
     } = require('../models/NC-news-models');
 const app = require('../app');
 
@@ -23,7 +24,13 @@ topicRouter
             next(err);
         })
     })
-    .post((req, res) => {
+    .post((req, res, next) => {
+        insertTopic(req.body).then((topic) => {
+            res.status(202).send({topic});
+        })
+        .catch((err) => {
+            next(err);
+        })
     })
     .patch((req, res) => {
     })

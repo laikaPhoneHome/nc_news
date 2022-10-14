@@ -1,9 +1,38 @@
 const db = require('../db/connection');
 const { articleData } = require('../db/data/test-data');
+const topicRouter = require('../routes/topic');
 
 exports.fetchTopics = () => {
     return db.query(`SELECT * FROM topics;`).then(({rows: topics}) => {
         return topics;
+    })
+}
+
+exports.insertTopic = (topic) => {
+    const { slug, description } = topic;
+    const validKeys = ['slug', 'description'];
+
+    const invalidKey = Object.keys(topic).filter(key => validKeys.indexOf(key) === -1);
+    const missingKey = validKeys.filter(key => Object.keys(topic).indexOf(key) === -1);
+    const undefinedKey = Object.keys(topic).filter(key => topic[key] === '')
+    const plural = (arr) => arr.length > 1 ? 'Keys' : 'Key';
+
+    if(invalidKey[0]){
+        return Promise.reject({status: 400, msg: `Invalid ${plural(invalidKey)}: ${[invalidKey.join(', ')]}`})
+    }
+    if(missingKey[0]){
+        return Promise.reject({status: 400, msg: `Missing ${plural(missingKey)}: ${[invalidKey.join(', ')]}`})
+    } 
+    if(undefinedKey[0]){
+        return Promise.reject({status: 400, msg: `${plural(invalidKey)}: ${[undefinedKey.join(', ')]} Cannot be Undefined`})
+    }
+    return db.query(`
+    INSERT INTO topics (slug, description)
+    VALUES ($1, $2)
+    RETURNING *;
+    `, [slug, description])
+    .then(({ rows: [topic]}) => {
+        return topic;
     })
 }
 
@@ -104,13 +133,22 @@ exports.selectArticle = (id) => {
 exports.insertArticle = (article) => {
     const { author, title, body, topic } = article;
     const validKeys = ['author', 'title', 'body', 'topic'];
-    for(let i=0; i<4; i++){
-        if(article[validKeys[i]] === undefined){
-            return Promise.reject({status: 400, msg: `Invalid Article ${validKeys[i].charAt(0).toUpperCase() + validKeys[i].slice(1)}`})
-        }
+
+    const invalidKey = Object.keys(article).filter(key => validKeys.indexOf(key) === -1);
+    const missingKey = validKeys.filter(key => Object.keys(article).indexOf(key) === -1);
+    const undefinedKey = Object.keys(article).filter(key => article[key] === '')
+    const plural = (arr) => arr.length > 1 ? 'Keys' : 'Key';
+
+    if(invalidKey[0]){
+        return Promise.reject({status: 400, msg: `Invalid ${plural(invalidKey)}: ${[invalidKey.join(', ')]}`})
+    } 
+    if(missingKey[0]){
+        return Promise.reject({status: 400, msg: `Missing ${plural(missingKey)}: ${[invalidKey.join(', ')]}`})
     }
-    
-    
+    if(undefinedKey[0]){
+        return Promise.reject({status: 400, msg: `${plural(undefinedKey)}: ${[undefinedKey.join(', ')]} Cannot Be Undefined`})
+    }
+
     return db.query(`
     INSERT INTO articles (author, title, body, topic)
     VALUES ($1, $2, $3, $4)
@@ -209,7 +247,26 @@ exports.updateArticle = (votes, id) => {
     })
 }
 
-exports.insertComment = (username, body, article_id) => {
+exports.insertComment = (comment, article_id) => {
+    const { username, body} = comment;
+    const validKeys = ['username', 'body'];
+
+    const invalidKey = Object.keys(comment).filter(key => validKeys.indexOf(key) === -1);
+    const missingKey = validKeys.filter(key => Object.keys(comment).indexOf(key) === -1);
+    const undefinedKey = Object.keys(comment).filter(key => comment[key] === '')
+    const plural = (arr) => arr.length > 1 ? 'Keys' : 'Key';
+
+    if(invalidKey[0]){
+        return Promise.reject({status: 400, msg: `Invalid ${plural(invalidKey)}: ${[invalidKey.join(', ')]}`})
+    } 
+    if(missingKey[0]){
+        return Promise.reject({status: 400, msg: `Missing ${plural(missingKey)}: ${[missingKey.join(', ')]}`})
+    }
+    if(undefinedKey[0]){
+        return Promise.reject({status: 400, msg: `${plural(invalidKey)}: ${[undefinedKey.join(', ')]} Cannot be Undefined`})
+    }
+
+
     return db.query(`
     INSERT INTO comments (author, body, article_id)
     VALUES ($1, $2, $3)
