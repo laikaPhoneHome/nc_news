@@ -271,6 +271,17 @@ describe('GET', () => {
 
                             })
                     })
+                    test('Get comments by article id takes a page number and limit query and are limited to 10 by default', () => {
+                        return request(app)
+                            .get('/api/articles/1/comments?p=1&limit=5')
+                            .expect(200)
+                            .then(( {body} ) => {
+                                const { comments } = body;
+
+                                expect(comments).toHaveLength(5);
+                            })
+                            
+                    })
 
                     test('Responds with status 400 if given an invalid article Id', () => {
                         return request(app)
@@ -528,6 +539,7 @@ describe('POST', () => {
                                 )
                             })
                     })
+                    
                     test('Responds with status 404 if given a valid article id that doesn\'t exist', () => {
                         return request(app)
                             .post('/api/articles/100/comments')
