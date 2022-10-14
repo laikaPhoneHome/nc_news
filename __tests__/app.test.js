@@ -491,14 +491,15 @@ describe('POST', () => {
                 return request(app)
                 .post('/api/articles/')
                 .send({
-                    my_name: 'halfcat,halfcat',
-                    name_of_my_article: 'testing testing 123',
-                    n: 'cats'
+                    author: 'halfcat,halfcat',
+                    title: '',
+                    topic: 'cats',
+                    body: 'all cat'
                 })
                 .expect(400)
                 .then(({ body }) => {
                     const { message } = body;
-                    expect(message).toBe('Invalid Keys: my_name, name_of_my_article, n');
+                    expect(message).toBe('Key: title Cannot Be Undefined');
                 })
             })
 
@@ -555,7 +556,7 @@ describe('POST', () => {
                                 expect(message).toBe('Invalid Article Id');
                             })
                     })
-                    test('Responds with 400 if given a invalid comment data in the body', () => {
+                    test('Responds with 400 if given a invalid user', () => {
                         return request(app)
                             .post('/api/articles/5/comments')
                             .send({
@@ -567,6 +568,19 @@ describe('POST', () => {
 
                                 const { message } = body;
                                 expect(message).toBe('Invalid User');
+                            })
+                    })
+                    test('Responds with 400 if given a invalid comment data in the body', () => {
+                        return request(app)
+                            .post('/api/articles/5/comments')
+                            .send({
+                                username: 'user',
+                            })
+                            .expect(400)
+                            .then(({ body }) => {
+
+                                const { message } = body;
+                                expect(message).toBe('Missing Key: body');
                             })
                     })
                 })
@@ -589,7 +603,7 @@ describe('POST', () => {
                             })
                         })
                 })
-                test.only('Responds with status 400 if given an invalid topic', () => {
+                test('Responds with status 400 if given an invalid topic', () => {
                     return request(app)
                         .post('/api/topics')
                         .send({
