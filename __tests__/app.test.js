@@ -440,6 +440,21 @@ describe('POST', () => {
                     )
                 })
             })
+            test('Responds with status 400 if given an invalid article', () => {
+                return request(app)
+                .post('/api/articles/')
+                .send({
+                    my_name: 'halfcat,halfcat',
+                    name_of_my_article: 'testing testing 123',
+                    n: 'cats'
+                })
+                .expect(400)
+                .then(({ body }) => {
+                    const { message } = body;
+                    expect(message).toBe('Invalid Article');
+                })
+            })
+
             describe('/:article_id', () => {
                 describe('/comments', () => {
 

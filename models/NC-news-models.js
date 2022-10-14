@@ -82,7 +82,6 @@ exports.insertArticle = (article) => {
     RETURNING article_id;
     `,[author, title, body, topic])
     .then(({rows: [{article_id}]}) => {
-        console.log(article_id)
         return db.query(`
     SELECT articles.*, COUNT(comment_id) AS comment_count
     FROM articles 
@@ -91,7 +90,6 @@ exports.insertArticle = (article) => {
         WHERE articles.article_id = $1  GROUP BY articles.article_id;
     `, [article_id])
     .then(({rows: [article]}) => {
-        console.log(article)
         return article;
     })
 })
