@@ -7,21 +7,6 @@ app.use(express.json());
 
 app.use('/api', apiRouter);
 
-// app.get('/api', getEndpoints);
-
-// app.get('/api/topics', getTopics);
-// app.get('/api/articles', getArticles);
-// app.get('/api/articles/:article_id', getArticleById);
-// app.get('/api/articles/:article_id/comments', getCommentsByArticleId);
-// app.get('/api/comments/:comment_id', getCommentById);
-// app.get('/api/users', getUsers);
-
-// app.patch('/api/articles/:article_id', patchArticleById);
-
-// app.post('/api/articles/:article_id/comments', postCommentByArticleId);
-
-// app.delete('/api/comments/:comment_id', deleteCommentById);
-
 
 app.use((err, req, res, next) => {
     if(err.status && err.msg){
@@ -33,6 +18,8 @@ app.use((err, req, res, next) => {
 app.use((err, req, res, next) => {
     if(err.code === '23503'){
         res.status(400).send({message: 'Invalid User'});
+    } else {
+        next(err);
     }
 })
 

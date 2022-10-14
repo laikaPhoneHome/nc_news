@@ -300,11 +300,41 @@ exports.removeComment = (id) => {
     DELETE FROM comments
     WHERE comment_id = $1
     RETURNING *;
-    `,[id]).then(({rows: [comment]}) => {
+    `,[id])
+    .then(({rows: [comment]}) => {
         if(!comment){
             return Promise.reject({status: 404, msg: 'Comment Not Found'})
         } else {
             return;
         }
     })
+}
+
+exports.removeArticle = (id) => {
+
+    if(isNaN(Number(id))){
+        return Promise.reject({status: 400, msg: 'Invalid Article Id'})
+    }
+    
+    return db.query(`
+    DELETE FROM comments
+    WHERE article_id = $1;
+    `,[id]).then(() => {
+    return  db.query(`
+    DELETE FROM articles
+    WHERE article_id = $1
+    RETURNING *;
+    `, [id])
+    })
+    .then(({rows: [article]}) => {
+        if(!article){
+            return Promise.reject({status: 404, msg: 'Article Not Found'});
+        } else {
+            return;
+        }
+    })
+
+    return Promise.all([deleteComments, deleteArticle])
+    
+    
 }

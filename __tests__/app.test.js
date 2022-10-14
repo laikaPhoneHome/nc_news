@@ -655,5 +655,28 @@ describe('DELETE', () => {
                 })
             })
         })
+        describe('/articles', () => {
+            describe('/:article_id', () => {
+
+                test('Responds with status 200 and a response of an empty object', () => {
+                    return request(app)
+                        .delete('/api/articles/5')
+                        .expect(204)
+                        .then(({ body }) => {
+                            expect(body).toEqual({});
+                        })
+                })
+                test('Responds with status 400 if given an invalid article id', () => {
+                    return request(app)
+                        .delete('/api/articles/theoneaboutme')
+                        .expect(400)
+                        .then(({ body }) => {
+
+                            const { message } = body;
+                            expect(message).toEqual('Invalid Article Id');
+                        })
+                })
+            })
+        })
     })
 })
