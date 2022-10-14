@@ -156,7 +156,7 @@ describe('GET', () => {
                         })
                     })
             })
-            test.only('Responds with status 200 and a no content message for pages with no content', () => {
+            test('Responds with status 200 and a no content message for pages with no content', () => {
                 return request(app)
                     .get('/api/articles?p=20&limit=5')
                     .expect(200)
@@ -569,6 +569,25 @@ describe('POST', () => {
                                 expect(message).toBe('Invalid User');
                             })
                     })
+                })
+            })
+            describe('/topics', () => {
+                test('Responds with status 202 and the inserted topic', () => {
+                    return request(app)
+                        .post('/api/topics')
+                        .send({
+                            "slug": "tests",
+                            "description": "description here"
+                        })
+                        .expect(202)
+                        .then(({ body }) => {
+                            const { topic } = body;
+
+                            expect(topic).toEqual({
+                                "slug": "tests",
+                                "description": "description here"
+                            })
+                        })
                 })
             })
         })
