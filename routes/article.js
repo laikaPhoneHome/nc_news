@@ -17,21 +17,19 @@ const articleRouter = require('express').Router();
 articleRouter
     .route('/')
     .get((req, res, next) => {
-        const { topic } = req.query;
-    const { sort_by } = req.query;
-    const { order } = req.query;
+    const { topic, sort_by, order, p, limit} = req.query;
 
-    const promises = [fetchArticles(topic, sort_by, order)]
+    const promises = [fetchArticles(topic, sort_by, order, p, limit)]
 
     if(topic){
         promises.push(fetchTopics())
     }
 
-    Promise.all(promises).then((promises) => {
-        if(promises[1]){
+    Promise.all(promises).then(([articles, topics]) => {
+        if(topics){
             let validTopic = false;
-            promises[1].forEach(promise => {
-                if(promise.slug === topic){
+            topics.forEach(type => {
+                if(type.slug === topic){
                     validTopic = true;
                 }
             })
@@ -40,12 +38,20 @@ articleRouter
             }
             else
             {
-                res.status(200).send({ articles: promises[0] });
+                if(articles.total_count < limit * p + 1){
+                    res.status(200).send({ message: 'No Content'})
+                }else {
+                    res.status(200).send({ articles });
+                }
             }
         }
         else 
         {
-            res.status(200).send({ articles: promises[0] });
+            if(articles.total_count < limit * p + 1){
+                res.status(200).send({ message: 'No Content'})
+            }else {
+                res.status(200).send({ articles });
+            }
         }
     })
     .catch((err) => {
