@@ -173,7 +173,7 @@ describe('GET', () => {
                     .then(({ body }) => {
 
                         const { message } = body;
-                        expect(message).toBe('Invalid Page')
+                        expect(message).toBe('Invalid Page Number')
                     })
             })
             test('Responds with status 400 if given an invalid topic', () => {
@@ -281,6 +281,26 @@ describe('GET', () => {
                                 expect(comments).toHaveLength(5);
                             })
                             
+                    })
+                    test('Responds with status 400 if given an invalid page query', () => {
+                        return request(app)
+                        .get('/api/articles/1/comments?p=two')
+                        .expect(400)
+                        .then(( {body} ) => {
+                            const { message } = body;
+
+                            expect(message).toBe('Invalid Page Number');
+                        })
+                    })
+                    test('Responds with 400 if givent an invalid limit query', () => {
+                        return request(app)
+                        .get('/api/articles/1/comments?limit=limit')
+                        .expect(400)
+                        .then(( {body} ) => {
+                            const { message } = body;
+
+                            expect(message).toBe('Invalid Page Limit');
+                        })
                     })
 
                     test('Responds with status 400 if given an invalid article Id', () => {

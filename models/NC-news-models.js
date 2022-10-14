@@ -41,7 +41,10 @@ exports.fetchArticles = (topic, sort_by = 'created_at', order = 'DESC', p = 1, l
     const validOrder = ['ASC', 'DESC'];
     const queries = [];
     if(isNaN(Number(p))){
-        return Promise.reject({status: 400, msg: 'Invalid Page'})
+        return Promise.reject({status: 400, msg: 'Invalid Page Number'})
+    }
+    if(isNaN(Number(limit))){
+        return Promise.reject({status: 400, msg: 'Invalid Page Limit'})
     }
 
     p -= 1;
@@ -187,14 +190,26 @@ exports.selectComment = (id) => {
     })
 }
 
-exports.fetchComments = (article) => {
+exports.fetchComments = (article, p = 1, limit = 10) => {
+
+    if(isNaN(Number(p))){
+        return Promise.reject({status: 400, msg: 'Invalid Page Number'})
+    }
+    if(isNaN(Number(limit))){
+        return Promise.reject({status: 400, msg: 'Invalid Page Limit'})
+    }
+
+    p -= 1;
+    const offset = limit * p;
+
     return db.query(`
     SELECT comment_id, comments.votes, comments.created_at, comments.author, comments.body FROM comments 
         LEFT JOIN articles
         ON articles.article_id = comments.article_id
     WHERE comments.article_id = $1
-    ORDER BY comments.created_at DESC;
-    `,[article])
+    ORDER BY comments.created_at DESC
+    LIMIT $2 OFFSET $3;
+    `,[article, limit, offset])
     .then(({rows: comments}) => {
         return comments;
     })
