@@ -129,6 +129,29 @@ describe('GET', () => {
                         expect(articles).toBeSortedBy('votes', { decending: false })
                     })
             })
+            test('Response articles are limited to ten by default and accepts the query p for the page to start at, and the limit of articles per page', () => {
+                return request(app)
+                    .get('/api/articles?p=2&limit=7')
+                    .expect(200)
+                    .then(({ body }) => {
+
+                        const { articles } = body;
+                        expect(articles).toHaveLength(6);
+                        articles.forEach(article => {
+                            expect(article).toEqual(
+                                expect.objectContaining({
+                                    author: expect.any(String),
+                                    title: expect.any(String),
+                                    article_id: expect.any(Number),
+                                    topic: expect.any(String),
+                                    created_at: expect.any(String),
+                                    votes: expect.any(Number),
+                                    comment_count: expect.any(String),
+                                })
+                            )
+                        })
+                    })
+            })
             test('Responds with status 400 if given an invalid topic', () => {
                 return request(app)
                     .get('/api/articles?topic=boats')

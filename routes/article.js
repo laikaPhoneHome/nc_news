@@ -17,11 +17,9 @@ const articleRouter = require('express').Router();
 articleRouter
     .route('/')
     .get((req, res, next) => {
-        const { topic } = req.query;
-    const { sort_by } = req.query;
-    const { order } = req.query;
+    const { topic, sort_by, order, p, limit} = req.query;
 
-    const promises = [fetchArticles(topic, sort_by, order)]
+    const promises = [fetchArticles(topic, sort_by, order, p, limit)]
 
     if(topic){
         promises.push(fetchTopics())
