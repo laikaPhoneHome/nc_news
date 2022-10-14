@@ -173,7 +173,7 @@ describe('GET', () => {
                     .then(({ body }) => {
 
                         const { message } = body;
-                        expect(message).toBe('Invalid Page')
+                        expect(message).toBe('Invalid Page Number')
                     })
             })
             test('Responds with status 400 if given an invalid topic', () => {
@@ -270,6 +270,37 @@ describe('GET', () => {
                                 })
 
                             })
+                    })
+                    test('Get comments by article id takes a page number and limit query and are limited to 10 by default', () => {
+                        return request(app)
+                            .get('/api/articles/1/comments?p=1&limit=5')
+                            .expect(200)
+                            .then(( {body} ) => {
+                                const { comments } = body;
+
+                                expect(comments).toHaveLength(5);
+                            })
+                            
+                    })
+                    test('Responds with status 400 if given an invalid page query', () => {
+                        return request(app)
+                        .get('/api/articles/1/comments?p=two')
+                        .expect(400)
+                        .then(( {body} ) => {
+                            const { message } = body;
+
+                            expect(message).toBe('Invalid Page Number');
+                        })
+                    })
+                    test('Responds with 400 if givent an invalid limit query', () => {
+                        return request(app)
+                        .get('/api/articles/1/comments?limit=limit')
+                        .expect(400)
+                        .then(( {body} ) => {
+                            const { message } = body;
+
+                            expect(message).toBe('Invalid Page Limit');
+                        })
                     })
 
                     test('Responds with status 400 if given an invalid article Id', () => {
@@ -528,6 +559,7 @@ describe('POST', () => {
                                 )
                             })
                     })
+                    
                     test('Responds with status 404 if given a valid article id that doesn\'t exist', () => {
                         return request(app)
                             .post('/api/articles/100/comments')
