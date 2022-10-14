@@ -666,6 +666,16 @@ describe('DELETE', () => {
                             expect(body).toEqual({});
                         })
                 })
+                test('Responds with status 400 if given an invalid article id', () => {
+                    return request(app)
+                        .delete('/api/articles/theoneaboutme')
+                        .expect(400)
+                        .then(({ body }) => {
+
+                            const { message } = body;
+                            expect(message).toEqual('Invalid Article Id');
+                        })
+                })
             })
         })
     })
