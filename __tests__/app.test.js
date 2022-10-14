@@ -460,7 +460,7 @@ describe('POST', () => {
     describe('/api', () => {
         describe('/articles', () => {
 
-            test.only('Responds with status 200 accepts a request body of an article object and responds with the posted article', () => {
+            test('Responds with status 200 accepts a request body of an article object and responds with the posted article', () => {
                 return request(app)
                 .post('/api/articles')
                 .send({
@@ -487,7 +487,7 @@ describe('POST', () => {
                     )
                 })
             })
-            test.only('Responds with status 400 if given an invalid article', () => {
+            test('Responds with status 400 if given an invalid article', () => {
                 return request(app)
                 .post('/api/articles/')
                 .send({
