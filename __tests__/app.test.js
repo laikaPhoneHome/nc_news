@@ -413,6 +413,48 @@ describe('POST', () => {
     describe('/api', () => {
         describe('/articles', () => {
 
+            test('Responds with status 200 accepts a request body of an article object and responds with the posted article', () => {
+                return request(app)
+                .post('/api/articles')
+                .send({
+                    author: 'halfcat,halfcat',
+                    title: 'testing testing 123',
+                    body: 'This is my test',
+                    topic: 'cats'
+                })
+                .expect(202)
+                .then(({ body }) => {
+                    const { article } = body;
+
+                    expect(article).toEqual(
+                        expect.objectContaining({
+                            author: 'halfcat,halfcat',
+                            title: 'testing testing 123',
+                            body: 'This is my test',
+                            topic: 'cats',
+                            article_id: 13,
+                            created_at: expect.any(String),
+                            votes: 0,
+                            comment_count: '0'
+                        })
+                    )
+                })
+            })
+            test('Responds with status 400 if given an invalid article', () => {
+                return request(app)
+                .post('/api/articles/')
+                .send({
+                    my_name: 'halfcat,halfcat',
+                    name_of_my_article: 'testing testing 123',
+                    n: 'cats'
+                })
+                .expect(400)
+                .then(({ body }) => {
+                    const { message } = body;
+                    expect(message).toBe('Invalid Article Author');
+                })
+            })
+
             describe('/:article_id', () => {
                 describe('/comments', () => {
 

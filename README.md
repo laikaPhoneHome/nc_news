@@ -2,7 +2,7 @@
 
 >## Hosted Version:
 
-# https://url.haventbeenabletoworkherokuyet
+# https://nc-news-laika.herokuapp.com/
 
 
 Your clone must include the .env files containing PGDATABASE=(nc_news/ nc_news_test)
