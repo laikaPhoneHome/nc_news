@@ -74,14 +74,24 @@ exports.selectArticle = (id) => {
 }
 
 exports.insertArticle = (article) => {
-    const { author, title, body, topic} = article;
-
+    const { author, title, body, topic } = article;
+    const validKeys = ['author', 'title', 'body', 'topic'];
+    for(let i=0; i<4; i++){
+        if(article[validKeys[i]] === undefined){
+            return Promise.reject({status: 400, msg: `Invalid Article ${validKeys[i].charAt(0).toUpperCase() + validKeys[i].slice(1)}`})
+        }
+    }
+    
+    
     return db.query(`
     INSERT INTO articles (author, title, body, topic)
     VALUES ($1, $2, $3, $4)
     RETURNING article_id;
     `,[author, title, body, topic])
     .then(({rows: [{article_id}]}) => {
+        if(!article_id){
+            return Promise.reject({status: 400, msg: 'Invalid Article'})
+        }
         return db.query(`
     SELECT articles.*, COUNT(comment_id) AS comment_count
     FROM articles 

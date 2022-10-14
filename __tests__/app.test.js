@@ -451,7 +451,7 @@ describe('POST', () => {
                 .expect(400)
                 .then(({ body }) => {
                     const { message } = body;
-                    expect(message).toBe('Invalid Article');
+                    expect(message).toBe('Invalid Article Author');
                 })
             })
 

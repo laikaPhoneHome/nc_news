@@ -52,7 +52,7 @@ articleRouter
         next(err);
     })
     })
-    .post((req, res) => {
+    .post((req, res, next) => {
         insertArticle(req.body).then((article) => {
             res.status(202).send({article});
         })
