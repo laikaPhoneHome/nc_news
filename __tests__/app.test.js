@@ -156,7 +156,17 @@ describe('GET', () => {
                         })
                     })
             })
-            test.skip('Responds with status 400 if given an invalid page or limit query', () => {
+            test.only('Responds with status 200 and a no content message for pages with no content', () => {
+                return request(app)
+                    .get('/api/articles?p=20&limit=5')
+                    .expect(200)
+                    .then(({ body }) => {
+
+                        const { message } = body;
+                        expect(message).toBe('No Content');
+                    })
+            })
+            test('Responds with status 400 if given an invalid page or limit query', () => {
                 return request(app)
                     .get('/api/articles?p=2nd&limit=nottoomany')
                     .expect(400)

@@ -38,12 +38,20 @@ articleRouter
             }
             else
             {
-                res.status(200).send({ articles });
+                if(articles.total_count < limit * p + 1){
+                    res.status(200).send({ message: 'No Content'})
+                }else {
+                    res.status(200).send({ articles });
+                }
             }
         }
         else 
         {
-            res.status(200).send({ articles });
+            if(articles.total_count < limit * p + 1){
+                res.status(200).send({ message: 'No Content'})
+            }else {
+                res.status(200).send({ articles });
+            }
         }
     })
     .catch((err) => {

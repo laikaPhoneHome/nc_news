@@ -11,6 +11,9 @@ exports.fetchArticles = (topic, sort_by = 'created_at', order = 'DESC', p = 1, l
     const validCategory = ['title', 'topic', 'author', 'body', 'created_at', 'votes'];
     const validOrder = ['ASC', 'DESC'];
     const queries = [];
+    if(isNaN(Number(p))){
+        return Promise.reject({status: 400, msg: 'Invalid Page'})
+    }
 
     p -= 1;
     const offset = limit * p;
