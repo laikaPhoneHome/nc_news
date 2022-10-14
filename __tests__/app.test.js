@@ -80,8 +80,8 @@ describe('GET', () => {
                     .then(({ body }) => {
                         const { articles } = body;
 
-                        expect(articles).toHaveLength(12);
-                        articles.forEach(article => {
+                        expect(articles.articles).toHaveLength(10);
+                        articles.articles.forEach(article => {
                             expect(article).toEqual(
                                 expect.objectContaining({
                                     author: expect.any(String),
@@ -103,9 +103,11 @@ describe('GET', () => {
                     .then(({ body }) => {
                         const { articles } = body;
 
-                        expect(articles).toHaveLength(1);
-                        expect(articles[0]).toEqual(
+                        expect(articles.articles).toHaveLength(1);
+                        expect(articles).toEqual(
                             expect.objectContaining({
+                                    "total_count": '1',
+                                    "articles":[{
                                 article_id: 5,
                                 title: 'UNCOVERED: catspiracy to bring down democracy',
                                 author: 'rogersop',
@@ -114,6 +116,8 @@ describe('GET', () => {
                                 votes: 0,
                                 topic: 'cats',
                                 comment_count: '2'
+                            }]
+                                
                             })
                         )
                     })
@@ -126,18 +130,18 @@ describe('GET', () => {
 
                         const { articles } = body;
 
-                        expect(articles).toBeSortedBy('votes', { decending: false })
+                        expect(articles.articles).toBeSortedBy('votes', { decending: false })
                     })
             })
             test('Response articles are limited to ten by default and accepts the query p for the page to start at, and the limit of articles per page', () => {
                 return request(app)
-                    .get('/api/articles?p=2&limit=7')
+                    .get('/api/articles?p=2&limit=5')
                     .expect(200)
                     .then(({ body }) => {
 
                         const { articles } = body;
-                        expect(articles).toHaveLength(6);
-                        articles.forEach(article => {
+                        expect(articles.articles).toHaveLength(5);
+                        articles.articles.forEach(article => {
                             expect(article).toEqual(
                                 expect.objectContaining({
                                     author: expect.any(String),
@@ -168,7 +172,7 @@ describe('GET', () => {
                     .expect(200)
                     .then(({ body }) => {
                         const { articles } = body;
-                        expect(articles).toHaveLength(0);
+                        expect(articles.articles).toHaveLength(0);
                     })
             })
             test('Responds with status 400 if given an invalid sort category', () => {

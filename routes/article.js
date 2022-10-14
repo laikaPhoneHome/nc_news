@@ -25,11 +25,11 @@ articleRouter
         promises.push(fetchTopics())
     }
 
-    Promise.all(promises).then((promises) => {
-        if(promises[1]){
+    Promise.all(promises).then(([articles, topics]) => {
+        if(topics){
             let validTopic = false;
-            promises[1].forEach(promise => {
-                if(promise.slug === topic){
+            topics.forEach(type => {
+                if(type.slug === topic){
                     validTopic = true;
                 }
             })
@@ -38,12 +38,12 @@ articleRouter
             }
             else
             {
-                res.status(200).send({ articles: promises[0] });
+                res.status(200).send({ articles });
             }
         }
         else 
         {
-            res.status(200).send({ articles: promises[0] });
+            res.status(200).send({ articles });
         }
     })
     .catch((err) => {

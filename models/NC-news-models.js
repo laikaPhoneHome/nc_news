@@ -7,10 +7,13 @@ exports.fetchTopics = () => {
     })
 }
 
-exports.fetchArticles = (topic, sort_by = 'created_at', order = 'DESC') => {
+exports.fetchArticles = (topic, sort_by = 'created_at', order = 'DESC', p = 1, limit = 10) => {
     const validCategory = ['title', 'topic', 'author', 'body', 'created_at', 'votes'];
     const validOrder = ['ASC', 'DESC'];
     const queries = [];
+
+    p -= 1;
+    const offset = limit * p;
 
     if(!validCategory.includes(sort_by)){
         return Promise.reject({status: 400, msg: "Invalid Sort Category"})
@@ -23,30 +26,52 @@ exports.fetchArticles = (topic, sort_by = 'created_at', order = 'DESC') => {
     SELECT articles.*, COUNT(comment_id) AS comment_count
     FROM articles
     LEFT JOIN comments 
-    ON articles.article_id = comments.article_id `
+        ON articles.article_id = comments.article_id `
 
     topic ? 
       queries.push(` 
     WHERE articles.topic = $1 
     GROUP BY articles.article_id  
-    ORDER BY ${sort_by}
+    ORDER BY ${sort_by} ${order.toUpperCase()}
     `)
     : queries.push(`
     GROUP BY articles.article_id  
-    ORDER BY ${sort_by}
+    ORDER BY ${sort_by} ${order.toUpperCase()}
+    `)
+
+    topic ?
+    queries.push(`LIMIT $2 OFFSET $3;
+    `)
+    :
+    queries.push(`LIMIT $1 OFFSET $2;
     `)
 
     defaultQuery += queries.join('');
-    defaultQuery += order.toUpperCase();
-    defaultQuery += ';';
+
 
     if(topic){
-        return db.query(defaultQuery,[topic]).then(({rows: articles}) => {
-            return articles;
+        
+        const articleCount = db.query(`
+        SELECT COUNT(*) FROM articles 
+        WHERE topic = $1;
+        `, [topic])
+
+        const selectQuery = db.query(defaultQuery,[topic, limit, offset])
+           
+        return Promise.all([articleCount, selectQuery]).then(([{rows: [{count}]},{rows: articles}]) => {
+            return {total_count: count, articles};
         })
+
     } else {
-        return db.query(defaultQuery).then(({rows: articles}) => {
-            return articles;
+
+        const articleCount = db.query(`
+        SELECT COUNT(*) FROM articles;
+        `)
+
+        const selectQuery = db.query(defaultQuery,[limit, offset])
+        
+        return Promise.all([articleCount, selectQuery]).then(([{rows: [{count}]}, {rows: articles}]) => {
+            return {total_count: count, articles};
         })
     }
 }
