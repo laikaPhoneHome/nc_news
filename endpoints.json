@@ -6,12 +6,24 @@
     "description": "serves an array of all topics",
     "queries": [],
     "exampleResponse": {
-      "topics": [{ "slug": "football", "description": "Footie!" }]
+      "topics": [
+        {
+          "slug": "football",
+          "description": "Footie!"
+        }
+      ]
     }
   },
   "GET /api/articles": {
     "description": "serves an array of all topics",
-    "queries": ["author", "topic", "sort_by", "order"],
+    "queries": [
+      "author",
+      "topic",
+      "sort_by",
+      "order",
+      "p",
+      "limit"
+    ],
     "exampleResponse": {
       "articles": [
         {
@@ -27,7 +39,7 @@
       ]
     },
     "/:article_id": {
-      "description": "Serves the article of the given id",
+      "description": "serves the article of the given id",
       "queries": [],
       "exampleResponse": {
         "article": {
@@ -40,27 +52,92 @@
           "comment_count": 0,
           "created_at": 1261945957202
         }
+      },
+      "/comments": "serves up the associated comments of the given article",
+      "queries": [
+        "p",
+        "limit"
+      ],
+      "exampleResponse": {
+        "comments": [
+          {
+            "author": "colourfulCraig",
+            "body": "Dislike",
+            "comment_id": 9,
+            "votes": 0,
+            "created_at": "2022-11-2200:08:00"
+          }
+        ]
       }
     }
-    
+  },
+  "GET /api/comments/:comment_id": {
+    "description": "serves up a comment with the given id",
+    "queries": [],
+    "exampleResponse": {
+      "username": "yoda",
+      "body": "fit in there, how he did?",
+      "created_at": "2022-9-0100:44:00"
+    }
   },
   "GET /api/users": {
     "description": "serves an array of all users",
     "queries": [],
     "exampleResponse": {
-      "users": [{ "username": "footballBoss", "name": "Drake" , "avatar_url": "https://www.dreamstime.com/happy-cat-closeup-portrait-funny-smile-cardboard-young-blue-background-image102078702"}]
+      "users": [
+        {
+          "username": "footballBoss",
+          "name": "Drake",
+          "avatar_url": "https://www.dreamstime.com/happy-cat-closeup-portrait-funny-smile-cardboard-young-blue-background-image102078702"
+        }
+      ]
+    },
+    "/:username": {
+      "description": "serves up a user of the given username",
+      "queries": [],
+      "exampleResponse": {
+        "username": "asuspiciousdog",
+        "name": "callumb",
+        "avatar_url": "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4"
+      }
     }
   },
   "POST /api/articles/:article_id/comments": {
     "description": "uploads a comment to the given article",
     "queries": [],
     "exampleRequestBody": {
-      "username": "mango77", "body": "What a great article! I'll read it tomorrow!"
+      "username": "mango77",
+      "body": "What a great article! I'll read it tomorrow!"
     }
   },
-  "DELETE /api/comments/:comment_id": {
-    "description": "removes the comment by the given id",
-    "queries": []
+  "POST /api/topics": {
+    "description": "creates a new topic for new associated articles",
+    "queries": [],
+    "exampleRequestBody": {
+      "slug": "sitting",
+      "description": "deceptively simple"
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "increments the article's votes property by the given amount",
+    "queries": [],
+    "exampleRequestBody": {
+      "inc_votes": 1
+    },
+    "PATCH /api/comments/:comment_id": {
+      "description": "increments the comment's votes property by the given amount",
+      "queries": [],
+      "exampleRequestBody": {
+        "inc_votes": 1
+      },
+      "DELETE /api/comments/:comment_id": {
+        "description": "removes a comment by the given id",
+        "queries": []
+      },
+      "DELETE /api/articles/:article_id": {
+        "description": "removes an article by the given id",
+        "queries": []
+      }
+    }
   }
-
 }
