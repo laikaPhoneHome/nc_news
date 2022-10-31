@@ -1,13 +1,10 @@
 const { 
     fetchTopics, 
     selectArticle, 
-    fetchUsers, 
     updateArticle, 
     fetchArticles, 
     fetchComments,
     insertComment,
-    removeComment,
-    selectComment,
     insertArticle,
     removeArticle
     } = require('../models/NC-news-models');
